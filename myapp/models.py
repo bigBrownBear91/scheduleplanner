@@ -1,0 +1,103 @@
+from datetime import datetime
+
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+
+class League(db.Model):
+    __tablename__ = 'leagues'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return f'id: {self.id}, name: {self.name}'
+
+
+class Club(db.Model):
+    __tablename__ = 'clubs'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return f'id: {self.id}, name: {self.name}'
+
+
+class Team(db.Model):
+    __tablename__ = 'teams'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    club_id = db.Column(db.Integer, db.ForeignKey('clubs.id'), nullable=False)
+    person_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
+    pool_id = db.Column(db.Integer, db.ForeignKey('pools.id'))
+    league_id = db.Column(db.Integer, db.ForeignKey('leagues.id'), nullable=False)
+    club = db.relationship('Club', backref='clubs')
+    person = db.relationship('Person', backref='teams')
+    pool = db.relationship('Pool', backref='pools')
+    league = db.relationship('League', backref='leagues')
+
+    def __init__(self, name, club, league, person=None, pool=None):
+        self.name = name
+        self.club = club
+        self.league = league
+        self.person = person
+        self.pool = pool
+
+    def __repr__(self):
+        return f'id:{self.id}, name:{self.name}, person:{self.person.name}, pool:{self.pool.name}'
+
+
+class Pool(db.Model):
+    __tablename__ = 'pools'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    address = db.Column(db.String(200), nullable=True)
+
+    def __init__(self, name, address=None):
+        self.name = name
+        self.address = address
+
+    def __repr__(self):
+        return f'id:{self.id}, name:{self.name}, address:{self.address}'
+
+
+class GameDate(db.Model):
+    __tablename__ = 'gamedates'
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, default=datetime.utcnow, nullable=False)
+    time = db.Column(db.Time, nullable=False)
+    pool_id = db.Column(db.Integer, db.ForeignKey('pools.id'), nullable=False)
+    home_team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
+    guest_team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
+    pool = db.relationship('Pool', backref='gamedates')
+    home_team = db.relationship('Team', backref='home_teams', foreign_keys=[home_team_id])
+    guest_team = db.relationship('Team', backref='guest_teams', foreign_keys=[guest_team_id])
+
+    def __init__(self, date, time, pool, home_team, guest_team):
+        self.date = date
+        self.time = time
+        self.pool = pool
+        self.home_team = home_team
+        self.guest_team = guest_team
+
+    def __repr__(self):
+        return f'id:{self.id}, date:{self.date}, pool:{self.pool.name}, home_team:{self.home_team.name}, guest_team:' \
+               f'{self.guest_team.name}'
+
+
+class Person(db.Model):
+    __tablename__ = 'persons'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return f'id:{self.id}, name:{self.name}'

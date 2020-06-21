@@ -1,0 +1,15 @@
+*.db
+__pychache__/
+db/*
+*.txt
+!requirements.txt
+*.db*
+*.sql
+venv
+.idea
+..gitignore.swp
+sandbox.py
+instance/*
+.pytest_cache/
+!.gitkeep
+!create_db.py
