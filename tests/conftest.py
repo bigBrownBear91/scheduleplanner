@@ -1,10 +1,6 @@
 import os
 
 import pytest
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 from myapp import create_app
 from myapp.models import League, db
@@ -23,26 +19,17 @@ def test_client():
 
 
 @pytest.fixture(scope='module')
-def create_session():
-    db_path = 'sqlite:///' + return_path_to_dbfolder_as_string() + 'testdb.db'
-    engine = db.create_engine()
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    yield session
-    session.rollback()
+def init_database():
+    app = create_app('test_config.py')
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + return_path_to_dbfolder_as_string() + '/testdb.db'
+    print(app.config['SQLALCHEMY_DATABASE_URI'])
+    with app.app_context():
+        db.init_app(app)
+        db.drop_all()
+        db.create_all()
+        league = League('NLB')
+        db.session.add(league)
+        db.session.commit()
 
-
-@pytest.fixture(scope='session')
-def app(request):
-    return create_app('test_config.py')
-
-
-@pytest.fixture(scope='session')
-def database(app):
-    db = SQLAlchemy(app=test_client)
-    return db
-
-
-@pytest.fixture(scope='session')
-def _db(database, request):
-    return database
+        yield db
+        db.drop_all()

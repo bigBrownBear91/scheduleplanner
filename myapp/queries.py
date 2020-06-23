@@ -20,11 +20,13 @@ def query_leagues(league_id=None, league_name=None, all_entries=False):
         raise ValueError('If all_entries is True, league_id and league_name may not be specified')
 
     if league_id is not None:
-        league = League.query.get(league_id).all()
+        league = League.query.get(league_id)
+        if not isinstance(league, League):
+            raise ValueError(f'Element with id {league_id} is not in database')
     if league_name is not None:
-        league = League.query.filter_by(name=league_name).all()
-        if len(league) > 1:
-            raise ValueError(f'There seems to be more than one league with the name {league_name}. Check the database')
+        league = League.query.filter_by(name=league_name).one()
+        if not isinstance(league, League):
+            raise ValueError(f'Element with name {league_name} is not in database')
     if all_entries is True:
         league = League.query.all()
 
