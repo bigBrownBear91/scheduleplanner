@@ -1,4 +1,4 @@
-def test_get_index(test_client):
+def test_get_index(test_client, init_database):
     """
     GIVEN a flask app
     WHEN '/' is requested
