@@ -1,4 +1,4 @@
-from myapp.models import League
+from myapp.models import League, Team
 
 
 def query_leagues(league_id=None, league_name=None, all_entries=False):
@@ -31,3 +31,34 @@ def query_leagues(league_id=None, league_name=None, all_entries=False):
         league = League.query.all()
 
     return league
+
+
+def query_teams(team_id=None, team_name=None, all_entries=False, league_id=None):
+    """
+    Returns either a team selected by the team id or the team name or a list of all teams in the database or all the
+    of a league given a league id.
+
+    :param team_id: The id of the team which should be returned
+    :param team_name: The name of the team which should be returned
+    :param all_entries: True if a list of all teams should be returned, False else
+    :param league_id: The id of the league of which the teams should be returned
+    :return: Either a single team or a list of teams
+    """
+
+    if team_id is not None and team_name is not None:
+        raise ValueError('team_id and team_name cannot be both specified')
+    if (team_id is not None or team_name is not None or league_id is not None) and all_entries is True:
+        raise ValueError('If all entries is true, both the id and the name must be None')
+    if (team_id is not None or team_name is not None or all_entries is True) and league_id is not None:
+        raise ValueError('If league_id is given, the other parameters must be None or False')
+
+    if team_id is not None:
+        team = Team.query.get(team_id)
+    if team_name is not None:
+        team = Team.query.filter_by(name=team_name).one()
+    if all_entries is True:
+        team = Team.query.all()
+    if league_id is not None:
+        team = Team.query.filter_by(league_id=league_id).all()
+
+    return team
