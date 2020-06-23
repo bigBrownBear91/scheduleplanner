@@ -23,6 +23,9 @@ class Club(db.Model):
     name = db.Column(db.String(80), nullable=False)
 
     def __init__(self, name):
+        """
+        :param name: Name of the club
+        """
         self.name = name
 
     def __repr__(self):
@@ -43,6 +46,13 @@ class Team(db.Model):
     league = db.relationship('League', backref='leagues')
 
     def __init__(self, name, club, league, person=None, pool=None):
+        """
+        :param name: Name of the team
+        :param club: Club to which the team belongs
+        :param league: League to which the team belongs
+        :param person: optional - Contact person
+        :param pool: optional - Pool in which the club plays
+        """
         self.name = name
         self.club = club
         self.league = league
