@@ -4,14 +4,40 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <h1 id="title">Overview over all teams of a league</h1>
+            <h1 id="title">All teams in a league</h1>
         </div>
     </div>
 </div>
 <div class="container">
     <div class="row">
         <div class="col-12">
-            
+            <class class="dropdown">
+                <p>Choose your league:</p>
+                <form>
+                    <select name="league" id="league_id">
+                        <option value=""></option>
+                        {% for league in leagues %}
+                        <option value="{{ league.id }}">{{ league.name }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </class>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h5>Teams</h5>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            {% for team in teams %}
+            <div id={{ team.name }}>{{ team.name }}</div>
+            {% endfor %}
         </div>
     </div>
 </div>
