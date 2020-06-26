@@ -70,6 +70,12 @@ class Pool(db.Model):
     address = db.Column(db.String(200), nullable=True)
 
     def __init__(self, name, address=None):
+        """
+        Instantiate Pool-class. Only the name is mandatory, the address is optional.
+
+        :param name: Name of the pool
+        :param address: The address of the pool
+        """
         self.name = name
         self.address = address
 
@@ -90,6 +96,15 @@ class GameDate(db.Model):
     guest_team = db.relationship('Team', backref='guest_teams', foreign_keys=[guest_team_id])
 
     def __init__(self, date, time, pool, home_team, guest_team):
+        """
+        Instantiate Gamedate-Class. Date, time, pool, home_team and guest_team needs are all mandatory.
+
+        :param date: Date of the game
+        :param time: Time of the game
+        :param pool: Pool in which to play
+        :param home_team: Home team
+        :param guest_team: Guest team
+        """
         self.date = date
         self.time = time
         self.pool = pool

@@ -1,10 +1,9 @@
-import os
+from datetime import date, time
 
 import pytest
 
 from myapp import create_app
-from myapp.models import League, Team, Club, db
-from db.create_db import create_db, return_path_to_dbfolder_as_string
+from myapp.models import League, Team, Club, GameDate, Pool, db
 
 
 @pytest.fixture(scope='module')
@@ -28,7 +27,13 @@ def init_database():
         league = League('NLB')
         club = Club('SK Bern')
         team = Team('Bern 1', club, league)
-        db.session.add_all([league, club, team])
+        team2 = Team('Bern 2', club, league)
+        pool = Pool('KaWeDe')
+        gamedate = GameDate(date(2020, 6, 21), time(18, 00, 00), pool, team, team2)
+        gamedate = GameDate(date(2020, 6, 25), time(18, 00, 00), pool, team2, team)
+        gamedate = GameDate(date(2020, 6, 21), time(18, 00, 00), Pool('SomePool'), Team('Newteam', club, league),
+                            Team('Anothernewteam', club, league))
+        db.session.add_all([league, club, team, team2, pool, gamedate])
         db.session.commit()
 
         yield db

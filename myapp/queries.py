@@ -1,4 +1,4 @@
-from myapp.models import League, Team
+from myapp.models import League, Team, GameDate
 
 
 def query_leagues(league_id=None, league_name=None, all_entries=False):
@@ -62,3 +62,22 @@ def query_teams(team_id=None, team_name=None, all_entries=False, league_id=None)
         team = Team.query.filter_by(league_id=league_id).all()
 
     return team
+
+
+def query_gamedates(team_id):
+    """
+    Returns a list of all games, a given team will play. Information included are the date, the time and the pool, in
+    which the game will be played.
+
+    :param team_id: The id of the team whos games are needed.
+    :return: List of games
+    """
+    if not isinstance(team_id, int):
+        raise ValueError('Variable team_id must be of type int')
+
+    results = GameDate.query.filter((GameDate.home_team_id == team_id) | (GameDate.guest_team_id == team_id)).all()
+
+    if len(results) == 0:
+        raise ValueError('There are no Gamedates for this team')
+
+    return results

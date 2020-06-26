@@ -1,6 +1,7 @@
+from datetime import date, time
 import pytest
 
-from myapp.queries import query_leagues, query_teams
+from myapp.queries import query_leagues, query_teams, query_gamedates
 
 
 def test_query_leagues_with_id(init_database):
@@ -77,3 +78,16 @@ def test_query_teams_search_all_of_league(init_database):
     assert isinstance(teams, list)
     assert teams[0].id == 1
     assert teams[0].name == 'Bern 1'
+
+
+def test_query_gamedates(init_database):
+    team = query_teams(team_id=1)
+    results = query_gamedates(team.id)
+
+    assert isinstance(results, list)
+    assert len(results) == 2
+    assert results[0].date == date(2020, 6, 21)
+    assert results[0].time == time(18, 00, 00)
+    assert results[0].pool.name == 'KaWeDe'
+    assert results[0].home_team == team
+    assert results[0].guest_team == query_teams(team_id=2)
