@@ -29,11 +29,11 @@ def init_database():
         team = Team('Bern 1', club, league)
         team2 = Team('Bern 2', club, league)
         pool = Pool('KaWeDe')
-        gamedate = GameDate(date(2020, 6, 21), time(18, 00, 00), pool, team, team2)
-        gamedate = GameDate(date(2020, 6, 25), time(18, 00, 00), pool, team2, team)
+        gamedate1 = GameDate(date(2020, 6, 21), time(18, 00, 00), pool, team, team2)
+        gamedate2 = GameDate(date(2020, 6, 25), time(18, 00, 00), pool, team2, team)
         gamedate = GameDate(date(2020, 6, 21), time(18, 00, 00), Pool('SomePool'), Team('Newteam', club, league),
                             Team('Anothernewteam', club, league))
-        db.session.add_all([league, club, team, team2, pool, gamedate])
+        db.session.add_all([league, club, team, team2, pool, gamedate, gamedate1, gamedate2])
         db.session.commit()
 
         yield db

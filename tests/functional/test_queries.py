@@ -2,6 +2,7 @@ from datetime import date, time
 import pytest
 
 from myapp.queries import query_leagues, query_teams, query_gamedates
+from myapp.models import GameDate
 
 
 def test_query_leagues_with_id(init_database):
@@ -80,14 +81,21 @@ def test_query_teams_search_all_of_league(init_database):
     assert teams[0].name == 'Bern 1'
 
 
-def test_query_gamedates(init_database):
-    team = query_teams(team_id=1)
-    results = query_gamedates(team.id)
+def test_query_teams_no_parameter_specified(init_database):
+    with pytest.raises(ValueError):
+        query_teams()
+    with pytest.raises(ValueError):
+        query_teams(None, None, False, None)
 
-    assert isinstance(results, list)
-    assert len(results) == 2
-    assert results[0].date == date(2020, 6, 21)
-    assert results[0].time == time(18, 00, 00)
-    assert results[0].pool.name == 'KaWeDe'
-    assert results[0].home_team == team
-    assert results[0].guest_team == query_teams(team_id=2)
+
+def test_query_gamedates(init_database):
+    hometeam = query_teams(team_id=1)
+    guestteam = query_teams(team_id=2)
+    result = query_gamedates(hometeam, guestteam)
+
+    assert isinstance(result, GameDate)
+    assert result.date == date(2020, 6, 21)
+    assert result.time == time(18, 00, 00)
+    assert result.pool.name == 'KaWeDe'
+    assert result.home_team == hometeam
+    assert result.guest_team == query_teams(team_id=2)

@@ -33,12 +33,15 @@
     </div>
 </div>
 <div class="container">
+    {% for team in teams %}
     <div class="row">
-        <div class="col-12">
-            {% for team in teams %}
+        <div class="col-6">
             <div id={{ team.name }}>{{ team.name }}</div>
-            {% endfor %}
+        </div>
+        <div class="col-6">
+            <div><a href="/scheduleplanner?schedule_for_team={{ team.id }}">Display game schedule</a></div>
         </div>
     </div>
+    {% endfor %}
 </div>
 {% endblock %}

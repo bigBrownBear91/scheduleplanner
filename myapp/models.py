@@ -86,9 +86,9 @@ class Pool(db.Model):
 class GameDate(db.Model):
     __tablename__ = 'gamedates'
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.Date, default=datetime.utcnow, nullable=False)
-    time = db.Column(db.Time, nullable=False)
-    pool_id = db.Column(db.Integer, db.ForeignKey('pools.id'), nullable=False)
+    date = db.Column(db.Date, default=datetime.utcnow, nullable=True)
+    time = db.Column(db.Time, nullable=True)
+    pool_id = db.Column(db.Integer, db.ForeignKey('pools.id'), nullable=True)
     home_team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     guest_team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     pool = db.relationship('Pool', backref='gamedates')

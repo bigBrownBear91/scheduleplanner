@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>All games of {{ schedule_for_team.name }}</h1>
+        </div>
+    </div>
+</div>
+<div class="container">
+    {% for gamedate in gamedates %}
+    <div class="row">
+        <div class="col-3">
+            {{ gamedate.home_team.name }}
+        </div>
+        <div class="col-3">
+            {{ gamedate.guest_team.name }}
+        </div>
+        <div class="col-3">
+            {{ gamedate.date }}
+        </div>
+        <div class="col-3">
+            <a href="/">Update</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

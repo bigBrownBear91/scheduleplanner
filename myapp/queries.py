@@ -51,6 +51,8 @@ def query_teams(team_id=None, team_name=None, all_entries=False, league_id=None)
         raise ValueError('If all entries is true, both the id and the name must be None')
     if (team_id is not None or team_name is not None or all_entries is True) and league_id is not None:
         raise ValueError('If league_id is given, the other parameters must be None or False')
+    if team_id is None and team_name is None and all_entries is False and league_id is None:
+        raise ValueError('One of The Parameters has to be specified')
 
     if team_id is not None:
         team = Team.query.get(team_id)
@@ -64,20 +66,18 @@ def query_teams(team_id=None, team_name=None, all_entries=False, league_id=None)
     return team
 
 
-def query_gamedates(team_id):
+def query_gamedates(hometeam, guestteam):
     """
     Returns a list of all games, a given team will play. Information included are the date, the time and the pool, in
     which the game will be played.
 
-    :param team_id: The id of the team whos games are needed.
-    :return: List of games
+    :param hometeam:
+    :param guestteam:
+    :return: Game of the two selected teams
     """
-    if not isinstance(team_id, int):
-        raise ValueError('Variable team_id must be of type int')
+    if not isinstance(hometeam, Team) or not isinstance(guestteam, Team):
+        raise ValueError('Variable hometeam and guestteam must be of type Team')
 
-    results = GameDate.query.filter((GameDate.home_team_id == team_id) | (GameDate.guest_team_id == team_id)).all()
+    result = GameDate.query.filter((GameDate.home_team == hometeam) & (GameDate.guest_team == guestteam)).one_or_none()
 
-    if len(results) == 0:
-        raise ValueError('There are no Gamedates for this team')
-
-    return results
+    return result

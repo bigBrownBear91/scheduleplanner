@@ -60,5 +60,4 @@ def return_path_to_dbfolder_as_string():
 
 
 if __name__ == '__main__':
-    create_db('development')
-    populate_db('dev_config.py', 'development')
+    create_db('development', 'dev_config.py')
