@@ -1,29 +1,98 @@
 {% extends 'base.html' %}
+{% from "_formhelpers.html" import render_field %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <h1>All games of {{ schedule_for_team.name }}</h1>
+{% if second_team_id is none %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>All games of {{ schedule_for_team.name }}</h1>
+            </div>
         </div>
     </div>
-</div>
-<div class="container">
-    {% for gamedate in gamedates %}
-    <div class="row">
-        <div class="col-3">
-            {{ gamedate.home_team.name }}
+    <div class="container">
+        {% for gamedate in gamedates %}
+        <div class="row">
+            <div class="col-4">
+                {{ gamedate.home_team.name }}
+            </div>
+            <div class="col-4">
+                {{ gamedate.guest_team.name }}
+            </div>
+            <div class="col-4">
+                <a href="/scheduleplanner?schedule_for_team={{ gamedate.home_team.id }}&second_team_id={{ gamedate.guest_team.id }}">Update</a>
+            </div>
         </div>
-        <div class="col-3">
-            {{ gamedate.guest_team.name }}
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    {{ render_field(home_game_form.date) }}
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    {{ render_field(home_game_form.time) }}
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    {{ render_field(home_game_form.pool) }}
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    {{ render_field(home_game_form.home_team) }}
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    {{ render_field(home_game_form.guest_team) }}
+                </div>
+            </div>
         </div>
-        <div class="col-3">
-            {{ gamedate.date }}
-        </div>
-        <div class="col-3">
-            <a href="/">Update</a>
+
+        <div class="row">
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    {{ render_field(guest_game_form.date) }}
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    {{ render_field(guest_game_form.time) }}
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    {{ render_field(guest_game_form.pool) }}
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    {{ render_field(guest_game_form.home_team) }}
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    {{ render_field(guest_game_form.guest_team) }}
+                </div>
+            </div>
         </div>
     </div>
-    {% endfor %}
-</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <form action="/scheduleplanner" method="post">
+                    <button class="btn-classic" >
+                        Update
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endif %}
 {% endblock %}
