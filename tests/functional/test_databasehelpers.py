@@ -1,8 +1,9 @@
 from datetime import date, time
 import pytest
 
-from myapp.queries import query_leagues, query_teams, query_gamedates
-from myapp.models import GameDate
+from myapp import db
+from myapp.database_helpers import query_leagues, query_teams, query_gamedates, insert_gamedate
+from myapp.models import GameDate, Team, Club, League
 
 
 def test_query_leagues_with_id(init_database):
@@ -88,7 +89,7 @@ def test_query_teams_no_parameter_specified(init_database):
         query_teams(None, None, False, None)
 
 
-def test_query_gamedates(init_database):
+def test_query_gamedates_if_games_in_db(init_database):
     hometeam = query_teams(team_id=1)
     guestteam = query_teams(team_id=2)
     result = query_gamedates(hometeam, guestteam)
@@ -99,3 +100,22 @@ def test_query_gamedates(init_database):
     assert result.pool.name == 'KaWeDe'
     assert result.home_team == hometeam
     assert result.guest_team == query_teams(team_id=2)
+
+
+def test_insert_gamedate(init_database):
+    newclub = Club('Newclub')
+    league = League('Newleague')
+    newteam1 = Team('newteam1', newclub, league)
+    newteam2 = Team('newteam2', newclub, league)
+    db.session.add_all([newclub, league, newteam1, newteam2])
+    db.session.commit()
+    insert_gamedate(newteam1, newteam2)
+    result = GameDate.query.get(4)
+
+    assert result.home_team == newteam1
+    assert result.guest_team == newteam2
+
+
+def test_insert_gamedate_parameters_not_teams(init_database):
+    with pytest.raises(ValueError):
+        insert_gamedate('string', 3)

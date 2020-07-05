@@ -1,3 +1,4 @@
+from myapp import db
 from myapp.models import League, Team, GameDate
 
 
@@ -68,8 +69,7 @@ def query_teams(team_id=None, team_name=None, all_entries=False, league_id=None)
 
 def query_gamedates(hometeam, guestteam):
     """
-    Returns a list of all games, a given team will play. Information included are the date, the time and the pool, in
-    which the game will be played.
+    Returns a the game of the given teams. If the game is not yet in the database, it will be inserted and returned.
 
     :param hometeam:
     :param guestteam:
@@ -79,5 +79,29 @@ def query_gamedates(hometeam, guestteam):
         raise ValueError('Variable hometeam and guestteam must be of type Team')
 
     result = GameDate.query.filter((GameDate.home_team == hometeam) & (GameDate.guest_team == guestteam)).one_or_none()
+    if result is None:
+        insert_gamedate(hometeam, guestteam)
 
     return result
+
+
+def insert_gamedate(hometeam, guestteam):
+    """
+    Inserts new gamedate into database.
+
+    :param hometeam:
+    :param guestteam:
+    :return: None
+    """
+    if not isinstance(hometeam, Team) and not isinstance(guestteam, Team):
+        raise ValueError('Hometeam and guestteam have to be of type Team')
+
+    gamedate = GameDate(None, None, None, hometeam, guestteam)
+    db.session.add(gamedate)
+    db.session.commit()
+
+
+def update_gamedates():
+    from time import sleep
+    sleep(5)
+    return True

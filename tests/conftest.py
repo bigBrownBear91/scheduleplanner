@@ -28,6 +28,7 @@ def init_database():
         club = Club('SK Bern')
         team = Team('Bern 1', club, league)
         team2 = Team('Bern 2', club, league)
+        team3 = Team('Bern 3', club, league)
         pool = Pool('KaWeDe')
         gamedate1 = GameDate(date(2020, 6, 21), time(18, 00, 00), pool, team, team2)
         gamedate2 = GameDate(date(2020, 6, 25), time(18, 00, 00), pool, team2, team)
