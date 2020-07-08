@@ -26,73 +26,91 @@
         {% endfor %}
     </div>
 {% else %}
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-md-2">
-                <div class="form-group">
-                    {{ render_field(home_game_form.date) }}
+    <form action="/scheduleplanner" method="post">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-2">
+                    <div class="form-group">
+                        {{ render_field(home_game_form.date) }}
+                    </div>
+                </div>
+                <div class="col-12 col-md-2">
+                    <div class="form-group">
+                        {{ render_field(home_game_form.time) }}
+                    </div>
+                </div>
+                <div class="col-12 col-md-2">
+                    <div class="form-group">
+                        {{ render_field(home_game_form.pool) }}
+                    </div>
+                </div>
+                <div class="col-12 col-md-2">
+                    <div class="form-group">
+                        {{ render_field(home_game_form.home_team) }}
+                    </div>
+                </div>
+                <div class="col-12 col-md-2">
+                    <div class="form-group">
+                        {{ render_field(home_game_form.guest_team) }}
+                    </div>
                 </div>
             </div>
-            <div class="col-12 col-md-2">
-                <div class="form-group">
-                    {{ render_field(home_game_form.time) }}
-                </div>
-            </div>
-            <div class="col-12 col-md-2">
-                <div class="form-group">
-                    {{ render_field(home_game_form.pool) }}
-                </div>
-            </div>
-            <div class="col-12 col-md-2">
-                <div class="form-group">
-                    {{ render_field(home_game_form.home_team) }}
-                </div>
-            </div>
-            <div class="col-12 col-md-2">
-                <div class="form-group">
-                    {{ render_field(home_game_form.guest_team) }}
-                </div>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-12 col-md-2">
-                <div class="form-group">
-                    {{ render_field(guest_game_form.date) }}
+            <div class="row">
+                <div class="col-12 col-md-2">
+                    <div class="form-group">
+                        {{ render_field(guest_game_form.date) }}
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-2">
-                <div class="form-group">
-                    {{ render_field(guest_game_form.time) }}
+                <div class="col-12 col-md-2">
+                    <div class="form-group">
+                        {{ render_field(guest_game_form.time) }}
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-2">
-                <div class="form-group">
-                    {{ render_field(guest_game_form.pool) }}
+                <div class="col-12 col-md-2">
+                    <div class="form-group">
+                        {{ render_field(guest_game_form.pool) }}
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-2">
-                <div class="form-group">
-                    {{ render_field(guest_game_form.home_team) }}
+                <div class="col-12 col-md-2">
+                    <div class="form-group">
+                        {{ render_field(guest_game_form.home_team) }}
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-2">
-                <div class="form-group">
-                    {{ render_field(guest_game_form.guest_team) }}
+                <div class="col-12 col-md-2">
+                    <div class="form-group">
+                        {{ render_field(guest_game_form.guest_team) }}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <form action="/scheduleplanner" method="post">
-                    <button class="btn-classic" >
-                        Update
-                    </button>
-                </form>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                        <button class="btn-classic" >
+                            Update
+                        </button>
+
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('#home_hometeam').attr('name', 'home_hometeam');
+        $('#home_guestteam').attr('name', 'home_guestteam');
+        $('#home_date').attr('name', 'home_date');
+        $('#home_time').attr('name', 'home_time');
+        $('#home_pool').attr('name', 'home_pool');
+        $('#guest_hometeam').attr('name', 'guest_hometeam');
+        $('#guest_guestteam').attr('name', 'guest_guestteam');
+        $('#guest_date').attr('name', 'guest_date');
+        $('#guest_time').attr('name', 'guest_time');
+        $('#guest_pool').attr('name', 'guest_pool');
+    });
+</script>
 {% endblock %}
