@@ -28,6 +28,7 @@ def test_get_scheduleplanner_gamedate_of_one_team(test_client, init_database):
     assert response.status_code == 200
     assert b'Bern 1' in response.data
     assert b'Bern 2' in response.data
+    assert b'KaWeDe' in response.data
 
 
 def test_update_gamedates_from_scheduleplanner(test_client, init_database):

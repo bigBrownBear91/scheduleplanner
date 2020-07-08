@@ -105,6 +105,15 @@ def test_query_gamedates_if_games_in_db(init_database):
     assert result.guest_team == query_teams(team_id=2)
 
 
+def test_query_gamedates_game_not_in_db(init_database):
+    hometeam = query_teams(team_id=1)
+    guestteam = query_teams(team_id=3)
+    result = query_gamedates(hometeam, guestteam)
+
+    assert result.home_team == hometeam
+    assert result.guest_team == guestteam
+
+
 def test_insert_gamedate(init_database):
     newclub = Club('Newclub')
     league = League('Newleague')

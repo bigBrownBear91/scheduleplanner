@@ -18,6 +18,11 @@ def get_index_page():
     return render_template('index.html', leagues=all_leagues, teams=teams)
 
 
+@view_bp.route('/', methods=['POST'])
+def change_league():
+    pass
+
+
 @view_bp.route('/scheduleplanner', methods=['GET'])
 def get_scheduleplanner_page():
     schedule_for_team_id = request.args.get('schedule_for_team')
@@ -45,6 +50,10 @@ def get_scheduleplanner_page():
         home_game_form = UpdateGameDate()
         home_game_form.home_team.data = schedule_for_team.name
         home_game_form.guest_team.data = second_team.name
+        if home_game.date is not None:
+            home_game_form.date.data = home_game.date
+        if home_game.time is not None: home_game_form.time.data = home_game.time
+        if home_game.pool is not None: home_game_form.pool.data = home_game.pool.name
         home_game_form.home_team.id = 'home_hometeam'
         home_game_form.guest_team.id = 'home_guestteam'
         home_game_form.date.id = 'home_date'
@@ -54,6 +63,9 @@ def get_scheduleplanner_page():
         guest_game_form = UpdateGameDate()
         guest_game_form.home_team.data = second_team.name
         guest_game_form.guest_team.data = schedule_for_team.name
+        if guest_game.date is not None: guest_game_form.date.data = guest_game.date
+        if guest_game.time is not None: guest_game_form.time.data = guest_game.time
+        if guest_game.pool is not None: guest_game_form.pool.data = guest_game.pool.name
         guest_game_form.home_team.id = 'guest_hometeam'
         guest_game_form.guest_team.id = 'guest_guestteam'
         guest_game_form.date.id = 'guest_date'

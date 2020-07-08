@@ -82,18 +82,19 @@ def query_gamedates(hometeam, guestteam):
 
     result = GameDate.query.filter((GameDate.home_team == hometeam) & (GameDate.guest_team == guestteam)).one_or_none()
     if result is None:
-        insert_gamedate(hometeam, guestteam)
+        gamedate = insert_gamedate(hometeam, guestteam)
+        return gamedate
 
     return result
 
 
 def insert_gamedate(hometeam, guestteam):
     """
-    Inserts new gamedate into database.
+    Inserts new gamedate into database and returns the inserted object.
 
     :param hometeam:
     :param guestteam:
-    :return: None
+    :return: The insertet gamedate.
     """
     if not isinstance(hometeam, Team) and not isinstance(guestteam, Team):
         raise ValueError('Hometeam and guestteam have to be of type Team')
@@ -101,6 +102,7 @@ def insert_gamedate(hometeam, guestteam):
     gamedate = GameDate(None, None, None, hometeam, guestteam)
     db.session.add(gamedate)
     db.session.commit()
+    return gamedate
 
 
 def update_gamedates(home_team, guest_team, date, time, pool):
