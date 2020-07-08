@@ -1,4 +1,7 @@
-from myapp.helpers import ValuesQuerystring
+from datetime import date, time
+import pytest
+
+from myapp.helpers import ValuesQuerystring, StringToDate, StringToTime
 
 
 def test_valueQueryStringInts():
@@ -13,3 +16,16 @@ def test_valueQueryStringStrings():
     vqs = ValuesQuerystring(url)
     assert vqs.id == 1
     assert vqs.otherteam == 'team'
+
+
+def test_stringToDateValidInput():
+    testdate = date(2020, 2, 12)
+
+    assert StringToDate('12.02.2020').date_as_date == testdate
+    assert StringToDate('12.2.2020').date_as_date == testdate
+    assert StringToDate('12.2.20').date_as_date == testdate
+    assert StringToDate('12.02.20').date_as_date == testdate
+
+
+def test_stringToTimeValidInput():
+    assert StringToTime('18.30').time_as_time == time(18, 30, 00)
