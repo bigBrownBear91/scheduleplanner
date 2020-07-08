@@ -1,3 +1,5 @@
+from sqlalchemy.orm.exc import NoResultFound
+
 from myapp import db
 from myapp.models import League, Team, GameDate, Pool
 
@@ -133,6 +135,9 @@ def query_pools(pool_id=None, pool_name=None, all_entries=False):
     if pool_id:
         return Pool.query.get(pool_id)
     if pool_name:
-        return Pool.query.filter_by(name=pool_name).one()
+        try:
+            return Pool.query.filter_by(name=pool_name).one()
+        except NoResultFound:
+            raise NoResultFound(f'The pool {pool_name} is not a known pool or there is a typo.')
     if all_entries:
         return Pool.query.all()

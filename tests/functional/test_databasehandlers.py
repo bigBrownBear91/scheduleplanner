@@ -1,6 +1,8 @@
 from datetime import date, time
 import pytest
 
+from sqlalchemy.orm.exc import NoResultFound
+
 from myapp import db
 from myapp.database_handlers import query_leagues, query_teams, query_gamedates, insert_gamedate, update_gamedates, \
     query_pools
@@ -167,3 +169,8 @@ def test_query_pool_more_than_one_parameter(init_database):
         query_pools(pool_id=1, pool_name='KaWeDe')
     with pytest.raises(ValueError):
         query_pools(pool_name='Weyerli', all_entries=True)
+
+
+def test_query_pool_unknown_pool_name(init_database):
+    with pytest.raises(NoResultFound):
+        query_pools(pool_name='UnknownPool')
