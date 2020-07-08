@@ -1,5 +1,5 @@
 from myapp import db
-from myapp.models import League, Team, GameDate
+from myapp.models import League, Team, GameDate, Pool
 
 
 def query_leagues(league_id=None, league_name=None, all_entries=False):
@@ -101,7 +101,38 @@ def insert_gamedate(hometeam, guestteam):
     db.session.commit()
 
 
-def update_gamedates():
-    from time import sleep
-    sleep(5)
+def update_gamedates(home_team, guest_team, date, time, pool):
+    """
+    Updates date, time and pool of a given gamedate.
+
+    :param pool:
+    :param time:
+    :param home_team:
+    :param guest_team:
+    :param date:
+    :return: True if no exception is raised
+    """
+    if not isinstance(home_team, Team) or not isinstance(guest_team, Team):
+        raise TypeError('Parameters home_team and guest_team has to be of type Team')
+
+    updategamedate = query_gamedates(home_team, guest_team)
+    updategamedate.date = date
+    updategamedate.time = time
+    updategamedate.pool = pool
+    db.session.commit()
+
     return True
+
+
+def query_pools(pool_id=None, pool_name=None, all_entries=False):
+    if not pool_id and not pool_name and not all_entries:
+        raise ValueError('Either an id or a name must be given or the flag all_entries must be True')
+    if pool_id and pool_name or pool_id and all_entries or pool_name and all_entries or pool_id and pool_name and all_entries:
+        raise (ValueError('Only one parameter may be specified'))
+
+    if pool_id:
+        return Pool.query.get(pool_id)
+    if pool_name:
+        return Pool.query.filter_by(name=pool_name).one()
+    if all_entries:
+        return Pool.query.all()

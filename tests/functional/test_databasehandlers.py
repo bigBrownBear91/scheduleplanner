@@ -2,8 +2,9 @@ from datetime import date, time
 import pytest
 
 from myapp import db
-from myapp.database_helpers import query_leagues, query_teams, query_gamedates, insert_gamedate
-from myapp.models import GameDate, Team, Club, League
+from myapp.database_handlers import query_leagues, query_teams, query_gamedates, insert_gamedate, update_gamedates, \
+    query_pools
+from myapp.models import GameDate, Team, Club, League, Pool
 
 
 def test_query_leagues_with_id(init_database):
@@ -119,3 +120,50 @@ def test_insert_gamedate(init_database):
 def test_insert_gamedate_parameters_not_teams(init_database):
     with pytest.raises(ValueError):
         insert_gamedate('string', 3)
+
+
+def test_update_gamedate(init_database):
+    home_team = query_teams(team_id=1)
+    guest_team = query_teams(team_id=2)
+    pool = query_pools(pool_name='Weyerli')
+
+    update_gamedates(home_team, guest_team, date(2020, 7, 1), time(18, 00, 00), pool)
+    test_result = query_gamedates(home_team, guest_team)
+
+    assert test_result.home_team == home_team
+    assert test_result.guest_team == guest_team
+    assert test_result.date == date(2020, 7, 1)
+    assert test_result, time == time(18, 00, 00)
+    assert test_result.pool == db.session.query(Pool).filter_by(name='Weyerli').one()
+
+
+def test_query_pool_by_id_if_existing(init_database):
+    result = query_pools(pool_id=1)
+
+    assert result.id == 1
+    assert result.name == 'KaWeDe'
+
+
+def test_query_pool_by_name(init_database):
+    result = query_pools(pool_name='KaWeDe')
+
+    assert result.id == 1
+    assert result.name == 'KaWeDe'
+
+
+def test_query_pool_all_entries(init_database):
+    result = query_pools(all_entries=True)
+
+    assert len(result) == 3
+
+
+def test_query_pool_no_parameter_given(init_database):
+    with pytest.raises(ValueError):
+        query_pools()
+
+
+def test_query_pool_more_than_one_parameter(init_database):
+    with pytest.raises(ValueError):
+        query_pools(pool_id=1, pool_name='KaWeDe')
+    with pytest.raises(ValueError):
+        query_pools(pool_name='Weyerli', all_entries=True)
