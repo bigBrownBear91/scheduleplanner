@@ -122,7 +122,7 @@ def test_insert_gamedate(init_database):
     db.session.add_all([newclub, league, newteam1, newteam2])
     db.session.commit()
     insert_gamedate(newteam1, newteam2)
-    result = GameDate.query.get(4)
+    result = query_gamedates(newteam1, newteam2)
 
     assert result.home_team == newteam1
     assert result.guest_team == newteam2

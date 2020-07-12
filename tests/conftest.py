@@ -25,17 +25,22 @@ def init_database():
         db.drop_all()
         db.create_all()
         league = League('NLB')
+        league_a = League('NLA')
         club = Club('SK Bern')
+        club2 = Club('Lugano Pallanuoto')
         team = Team('Bern 1', club, league)
         team2 = Team('Bern 2', club, league)
         team3 = Team('Bern 3', club, league)
+        team_lug1 = Team('Lugano1', club2, league_a)
+        team_lug2 = Team('Lugano2', club2, league_a)
         pool = Pool('KaWeDe')
         secondpool = Pool('Weyerli')
         gamedate1 = GameDate(date(2020, 6, 21), time(18, 00, 00), pool, team, team2)
         gamedate2 = GameDate(date(2020, 6, 25), time(18, 00, 00), pool, team2, team)
         gamedate = GameDate(date(2020, 6, 21), time(18, 00, 00), Pool('SomePool'), Team('Newteam', club, league),
                             Team('Anothernewteam', club, league))
-        db.session.add_all([league, club, team, team2, team3, pool, secondpool, gamedate, gamedate1, gamedate2])
+        db.session.add_all([league, league_a, club, club2, team, team2, team3, team_lug1, team_lug2, pool, secondpool,
+                            gamedate, gamedate1, gamedate2])
         db.session.commit()
 
         yield db
