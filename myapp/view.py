@@ -18,11 +18,6 @@ def get_index_page():
     return render_template('index.html', leagues=all_leagues, teams=teams)
 
 
-@view_bp.route('/', methods=['POST'])
-def change_league():
-    pass
-
-
 @view_bp.route('/scheduleplanner', methods=['GET'])
 def get_scheduleplanner_page():
     schedule_for_team_id = request.args.get('schedule_for_team')
