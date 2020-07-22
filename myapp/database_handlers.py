@@ -1,7 +1,7 @@
 from sqlalchemy.orm.exc import NoResultFound
 
 from myapp import db
-from myapp.models import League, Team, GameDate, Pool
+from myapp.models import League, Team, GameDate, Pool, Club
 
 
 def query_leagues(league_id=None, league_name=None, all_entries=False):
@@ -143,3 +143,50 @@ def query_pools(pool_id=None, pool_name=None, all_entries=False):
             raise NoResultFound(f'The pool {pool_name} is not a known pool or there is a typo.')
     if all_entries:
         return Pool.query.all()
+
+
+def query_clubs(club_id=None, club_name=None, all_entries=False):
+    """
+    Returns either one club or all clubs as dictonnaries with the teams belonging to a club as additional attribute. De-
+    pending of the chosen parameters only one club is returned or all of them.
+
+    :param club_id:
+    :param club_name:
+    :param all_entries:
+    :return: Either a dict of a club and its teams or a list of dicts for all clubs.
+    """
+
+    if club_id is not None and club_name is not None:
+        raise ValueError('club_id and club_name cannot be both specified')
+    if (club_id is not None or club_name is not None) and all_entries is True:
+        raise ValueError('If all entries is true, both the id and the name must be None')
+    if club_id is None and club_name is None and all_entries is False:
+        raise ValueError('One of The Parameters has to be specified')
+
+    if club_id:
+        club = Club.query.get(club_id)
+        teams = Team.query.filter_by(club=club).all()
+        club.__setattr__('teams', teams)
+        return club
+
+    elif club_name:
+        try:
+            club = Club.query.filter_by(name=club_name).one()
+        except NoResultFound:
+            raise NoResultFound(f'The club {club_name} is not known or there is a typo in the club name')
+
+        teams = Team.query.filter_by(club=club).all()
+        club.__setattr__('teams', teams)
+        return club
+
+    elif all_entries:
+        clubs = Club.query.all()
+        print(clubs)
+        for club in clubs:
+            teams = Team.query.filter_by(club=club).all()
+            club.__setattr__('teams', teams)
+
+        return clubs
+
+    else:
+        raise Exception('There seems to be an error since no option is selected!')

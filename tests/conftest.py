@@ -17,7 +17,7 @@ def test_client():
     ctx.pop()
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture
 def init_database():
     app = create_app('test_config.py')
     with app.app_context():
@@ -39,8 +39,9 @@ def init_database():
         gamedate2 = GameDate(date(2020, 6, 25), time(18, 00, 00), pool, team2, team)
         gamedate = GameDate(date(2020, 6, 21), time(18, 00, 00), Pool('SomePool'), Team('Newteam', club, league),
                             Team('Anothernewteam', club, league))
+        club_without_team = Club('Club without team')
         db.session.add_all([league, league_a, club, club2, team, team2, team3, team_lug1, team_lug2, pool, secondpool,
-                            gamedate, gamedate1, gamedate2])
+                            gamedate, gamedate1, gamedate2, club_without_team])
         db.session.commit()
 
         yield db

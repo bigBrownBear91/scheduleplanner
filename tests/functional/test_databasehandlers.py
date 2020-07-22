@@ -5,7 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from myapp import db
 from myapp.database_handlers import query_leagues, query_teams, query_gamedates, insert_gamedate, update_gamedates, \
-    query_pools
+    query_pools, query_clubs
 from myapp.models import GameDate, Team, Club, League, Pool
 
 
@@ -183,3 +183,53 @@ def test_query_pool_more_than_one_parameter(init_database):
 def test_query_pool_unknown_pool_name(init_database):
     with pytest.raises(NoResultFound):
         query_pools(pool_name='UnknownPool')
+
+
+def test_query_clubs_by_id(init_database):
+    result = query_clubs(club_id=1)
+
+    assert result.id == 1
+    assert result.name == 'SK Bern'
+    assert len(result.teams) == 5  # Newteam and Anothernewteam made for gamedates are also in the database, therefore 5
+    assert isinstance(result.teams[0], Team)
+    assert result.teams[0].name == 'Bern 1'
+    assert result.teams[1].name == 'Bern 2'
+    assert result.teams[2].name == 'Bern 3'
+
+
+def test_query_clubs_by_name(init_database):
+    result = query_clubs(club_name='SK Bern')
+
+    assert result.id == 1
+    assert result.name == 'SK Bern'
+    assert len(result.teams) == 5
+    assert isinstance(result.teams[0], Team)
+    assert result.teams[0].name == 'Bern 1'
+    assert result.teams[1].name == 'Bern 2'
+    assert result.teams[2].name == 'Bern 3'
+
+
+def test_query_clubs_all(init_database):
+    result = query_clubs(all_entries=True)
+
+    assert len(result) == 3
+    assert result[0].name == 'SK Bern'
+    assert result[1].name == 'Lugano Pallanuoto'
+    assert result[2].name == 'Club without team'
+
+
+def test_query_clubs_no_parameter_given(init_database):
+    with pytest.raises(ValueError):
+        query_clubs()
+
+
+def test_query_clubs_more_than_one_parameter(init_database):
+    with pytest.raises(ValueError):
+        query_clubs(club_id=1, club_name='SK Bern')
+    with pytest.raises(ValueError):
+        query_clubs(club_name='SK Bern', all_entries=True)
+
+
+def test_query_club_unknown_club_name(init_database):
+    with pytest.raises(NoResultFound):
+        query_clubs(club_name='UnknownPool')
