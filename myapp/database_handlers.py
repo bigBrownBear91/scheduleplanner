@@ -165,7 +165,7 @@ def query_clubs(club_id=None, club_name=None, all_entries=False):
 
     if club_id:
         club = Club.query.get(club_id)
-        teams = Team.query.filter_by(club=club).all()
+        teams = Team.query.filter_by(club=club).order_by(Team.name).all()
         club.__setattr__('teams', teams)
         return club
 
@@ -175,15 +175,15 @@ def query_clubs(club_id=None, club_name=None, all_entries=False):
         except NoResultFound:
             raise NoResultFound(f'The club {club_name} is not known or there is a typo in the club name')
 
-        teams = Team.query.filter_by(club=club).all()
+        teams = Team.query.filter_by(club=club).order_by(Team.name).all()
         club.__setattr__('teams', teams)
         return club
 
     elif all_entries:
-        clubs = Club.query.all()
+        clubs = Club.query.order_by(Club.name).all()
         print(clubs)
         for club in clubs:
-            teams = Team.query.filter_by(club=club).all()
+            teams = Team.query.filter_by(club=club).order_by(Team.name).all()
             club.__setattr__('teams', teams)
 
         return clubs

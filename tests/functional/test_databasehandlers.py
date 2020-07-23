@@ -192,9 +192,9 @@ def test_query_clubs_by_id(init_database):
     assert result.name == 'SK Bern'
     assert len(result.teams) == 5  # Newteam and Anothernewteam made for gamedates are also in the database, therefore 5
     assert isinstance(result.teams[0], Team)
-    assert result.teams[0].name == 'Bern 1'
-    assert result.teams[1].name == 'Bern 2'
-    assert result.teams[2].name == 'Bern 3'
+    assert result.teams[0].name == 'Anothernewteam'
+    assert result.teams[1].name == 'Bern 1'
+    assert result.teams[2].name == 'Bern 2'
 
 
 def test_query_clubs_by_name(init_database):
@@ -204,18 +204,18 @@ def test_query_clubs_by_name(init_database):
     assert result.name == 'SK Bern'
     assert len(result.teams) == 5
     assert isinstance(result.teams[0], Team)
-    assert result.teams[0].name == 'Bern 1'
-    assert result.teams[1].name == 'Bern 2'
-    assert result.teams[2].name == 'Bern 3'
+    assert result.teams[0].name == 'Anothernewteam'
+    assert result.teams[1].name == 'Bern 1'
+    assert result.teams[2].name == 'Bern 2'
 
 
 def test_query_clubs_all(init_database):
     result = query_clubs(all_entries=True)
 
     assert len(result) == 3
-    assert result[0].name == 'SK Bern'
+    assert result[0].name == 'Club without team'
     assert result[1].name == 'Lugano Pallanuoto'
-    assert result[2].name == 'Club without team'
+    assert result[2].name == 'SK Bern'
 
 
 def test_query_clubs_no_parameter_given(init_database):
