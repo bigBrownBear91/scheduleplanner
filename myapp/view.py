@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, url_for, request, redirect
 
-from myapp.database_handlers import query_teams, query_leagues, query_gamedates, update_gamedates, query_pools
+from myapp.database_handlers import query_teams, query_leagues, query_gamedates, update_gamedates, query_pools, \
+    query_clubs
 from myapp.models import GameDate
 from myapp import db
 from myapp.forms import UpdateGameDate
@@ -88,3 +89,16 @@ def update_gamedates_from_scheduleplanner():
 
     return redirect(url_for('view_bp.get_scheduleplanner_page', second_team_id=None,
                             schedule_for_team=schedule_for_team.id))
+
+
+@view_bp.route('/all_teams', methods=['GET'])
+def get_allteams():
+    clubs = query_clubs(all_entries=True)
+    print(url_for('view_bp.update_club', club=clubs[0]))
+    return render_template('all_teams.html', clubs=clubs)
+
+
+@view_bp.route('/update_team', methods=['GET'])
+def update_team():
+    team = {'id': 1, 'name': 'name'}
+    return render_template('/update_team.html', team=team)

@@ -69,3 +69,67 @@ def test_update_gamedates_from_scheduleplanner(test_client, init_database):
     assert game2.guest_team == query_teams(team_name='Bern 1')
 
     assert response.status_code == 302
+
+
+def test_overview_all_teams(test_client, init_database):
+    """
+    GIVEN a get request for the url /all_teams
+    THEN all test teams are listed ordered by club names and teamnames and status code is 200
+    """
+    response = test_client.get('/all_teams')
+
+    assert response.status_code == 200
+    assert b'SK Bern' in response.data
+    assert b'Bern 1' and b'Bern 2' and b'Bern 3' in response.data
+    assert b'Lugano Pallanuoto' in response.data
+    assert b'Lugano1' and b'Lugano1' in response.data
+    assert is_order_of_strings_in_string_correct('Lugano Pallanuoto', 'SK Bern', response.data) is True
+    assert is_order_of_strings_in_string_correct(b'Bern 1', b'Bern 2', response.data)
+
+
+def test_overview_all_teams_links_are_working(test_client, init_database):
+    """
+    GIVEN a get request for the url /all_teams
+    THEN links for all test teams to an update page for the teams respectivley club are generated
+        AND a button to a page to insert a new team respectivley club are generated
+    """
+    response = test_client.get('/all_teams')
+
+    assert b'href="/update_club?club_id=1' in response.data
+    assert b'href="/update_club?club_id=2' in response.data
+    assert b'href="/update_team?team_id=1' in response.data
+    assert b'href="/update_team?team_id=2' in response.data
+
+
+def test_update_team_get(test_client, init_database):
+    response = test_client.get('/update_team?team_id=1')
+
+    assert response.status_code == 200
+    assert b'Bern 1' in response.data
+
+
+def is_order_of_strings_in_string_correct(string1, string2, whole_string):
+    """
+    Returns True if String 1 is before String 2 in a given string and False otherwise.
+
+    :param string1: The substring supposed to be first in the string.
+    :param string2: The substring supposed to be second in the string.
+    :param whole_string: The whole string containing both substrings.
+    :return: True if String 1 before String 2, False otherwise
+    """
+
+    if type(string1) != type(whole_string) or type(string2) != type(whole_string):
+        if not isinstance(string1, bytes): string1 = bytes(string1, encoding='ascii')
+        if not isinstance(string2, bytes): string2 = bytes(string2, encoding='ascii')
+        if not isinstance(whole_string, bytes): whole_string = bytes(whole_string, encoding='ascii')
+
+    if string1 not in whole_string:
+        raise ValueError('Whole_string doesn\'t contain string 1')
+    if string2 not in whole_string:
+        raise ValueError('Whole_string doesn\'t contain string 2')
+
+    begin_string_1 = whole_string.find(string1)
+    begin_string_2 = whole_string.find(string2)
+
+    return_value = True if begin_string_1 < begin_string_2 else False
+    return return_value
