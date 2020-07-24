@@ -1,7 +1,7 @@
 from sqlalchemy.orm.exc import NoResultFound
 
 from myapp import db
-from myapp.models import League, Team, GameDate, Pool, Club
+from myapp.models import League, Team, GameDate, Pool, Club, Person
 
 
 def query_leagues(league_id=None, league_name=None, all_entries=False):
@@ -181,7 +181,6 @@ def query_clubs(club_id=None, club_name=None, all_entries=False):
 
     elif all_entries:
         clubs = Club.query.order_by(Club.name).all()
-        print(clubs)
         for club in clubs:
             teams = Team.query.filter_by(club=club).order_by(Team.name).all()
             club.__setattr__('teams', teams)
@@ -190,3 +189,42 @@ def query_clubs(club_id=None, club_name=None, all_entries=False):
 
     else:
         raise Exception('There seems to be an error since no option is selected!')
+
+
+def update_team(team_id, **kwargs):
+    """
+    Updates the team with the given id with the values passed with kwargs.
+
+    :param team_id: Id of the team to be updated
+    :param kwargs: Must be in set (name, person, pool and league).
+    :return: Nothing
+    """
+    team = query_teams(team_id=team_id)
+
+    if not set(kwargs).issubset({'name', 'person', 'pool', 'league'}):
+        raise TypeError('The keys for kwargs must be of the set (name, person, pool and league)')
+
+    if kwargs.get('name'): team.name = kwargs.get('name')
+    if kwargs.get('person'): team.person = query_person(kwargs.get('person'))
+    if kwargs.get('pool'): team.pool = query_pools(pool_name=kwargs.get('pool'))
+    if kwargs.get('league'): team.league = query_leagues(league_name=kwargs.get('league'))
+
+    db.session.commit()
+
+
+def query_person(person_name):
+    """
+    Returns the person. If this person doesn't exist yet, it is created and returned.
+
+    :param person_name: Name of the person.
+    :return: Instance of the person.
+    """
+    result = Person.query.filter_by(name=person_name).one_or_none()
+
+    if not result:
+        newperson = Person(person_name)
+        db.session.add(newperson)
+        db.session.commit()
+        result = query_person(newperson.name)
+
+    return result

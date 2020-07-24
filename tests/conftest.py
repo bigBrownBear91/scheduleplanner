@@ -45,4 +45,3 @@ def init_database():
         db.session.commit()
 
         yield db
-        # db.drop_all()
