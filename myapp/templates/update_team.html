@@ -1,1 +1,50 @@
 {% extends 'base.html' %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block content %}
+<div class="container">
+    <form action="/update_team?team_id={{ team.id }}" method="post">
+        {{ update_team.hidden_tag() }}
+        <div class="row">
+            <div class="col-12">
+                <h2>Club: {{ team.club.name }}</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    {{ render_field(update_team.name) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    {{ render_field(update_team.person) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    {{ render_field(update_team.pool) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    {{ render_field(update_team.league) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    {{ render_field(update_team.submit) }}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

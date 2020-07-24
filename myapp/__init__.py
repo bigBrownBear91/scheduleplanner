@@ -2,6 +2,7 @@
 from flask import Flask
 
 from myapp.models import db
+from myapp.extensions import csrf
 
 
 def create_app(config=None):
@@ -11,6 +12,7 @@ def create_app(config=None):
         app.config.from_pyfile(config)
 
     db.init_app(app)
+    csrf.init_app(app)
 
     with app.app_context():
         import myapp.view

@@ -3,11 +3,8 @@
 <div class="container">
     {% for club in clubs %}
         <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12">
                 <p style="top-margin: 5px" id="{{ club.id }}"><b>{{ club.name }}</b></p>
-            </div>
-            <div class="col-12 col-md-6">
-                <a href="{{ url_for('view_bp.update_club', club_id=club.id) }}">Update</a>
             </div>
         </div>
         {% for team in club.teams %}

@@ -191,7 +191,7 @@ def query_clubs(club_id=None, club_name=None, all_entries=False):
         raise Exception('There seems to be an error since no option is selected!')
 
 
-def update_team(team_id, **kwargs):
+def update_team_instance(team_id, **kwargs):
     """
     Updates the team with the given id with the values passed with kwargs.
 

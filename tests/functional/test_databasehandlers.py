@@ -5,7 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from myapp import db
 from myapp.database_handlers import query_leagues, query_teams, query_gamedates, insert_gamedate, update_gamedates, \
-    query_pools, query_clubs, update_team, query_person
+    query_pools, query_clubs, update_team_instance, query_person
 from myapp.models import GameDate, Team, Club, League, Pool, Person
 
 
@@ -241,7 +241,7 @@ def test_update_team_everything_nullable_is_null(init_database):
     WHEN an update for name = updatedteamname, person = momcilo, pool = Weyerli and league = nla is made
     THEN the attributes are stored into the db
     """
-    update_team(team_id=1, **{'name': 'updatedteamname', 'person': 'momcilo', 'pool': 'Weyerli', 'league': 'NLA'})
+    update_team_instance(team_id=1, **{'name': 'updatedteamname', 'person': 'momcilo', 'pool': 'Weyerli', 'league': 'NLA'})
     result = query_teams(team_id=1)
 
     assert result.name == 'updatedteamname'
@@ -263,7 +263,7 @@ def test_update_team_only_pool(init_database):
     db.session.commit()
 
     team = query_teams(team_name='testupdateteam')
-    update_team(team.id, **{'pool': 'Weyerli'})
+    update_team_instance(team.id, **{'pool': 'Weyerli'})
 
     assertteam = query_teams(team_name='testupdateteam')
     assert assertteam.name == 'testupdateteam'

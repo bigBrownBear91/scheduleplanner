@@ -1,8 +1,7 @@
 from datetime import date, time
 
-from myapp import db
-from myapp.database_handlers import query_teams, insert_gamedate, query_gamedates
-from myapp.models import GameDate, Team
+from myapp.database_handlers import query_teams, insert_gamedate, query_gamedates, query_person, query_leagues
+from tests.helpers import is_order_of_strings_in_string_correct
 
 
 def test_get_index(test_client, init_database):
@@ -95,8 +94,6 @@ def test_overview_all_teams_links_are_working(test_client, init_database):
     """
     response = test_client.get('/all_teams')
 
-    assert b'href="/update_club?club_id=1' in response.data
-    assert b'href="/update_club?club_id=2' in response.data
     assert b'href="/update_team?team_id=1' in response.data
     assert b'href="/update_team?team_id=2' in response.data
 
@@ -108,28 +105,16 @@ def test_update_team_get(test_client, init_database):
     assert b'Bern 1' in response.data
 
 
-def is_order_of_strings_in_string_correct(string1, string2, whole_string):
+def test_update_team_post(test_client, init_database):
     """
-    Returns True if String 1 is before String 2 in a given string and False otherwise.
-
-    :param string1: The substring supposed to be first in the string.
-    :param string2: The substring supposed to be second in the string.
-    :param whole_string: The whole string containing both substrings.
-    :return: True if String 1 before String 2, False otherwise
+    GIVEN team1 with name: Bern1, league: NLB and no person
+    WHEN post to update team to name: nlb_team_of_bern, person: pesche and league: NLA
+    THEN correct update and redirect to all teams
     """
+    postdata = {'name': 'nlb_team_of_bern', 'person': 'pesche', 'league': 'NLA'}
+    response = test_client.post('/update_team?team_id=1', data=postdata)
 
-    if type(string1) != type(whole_string) or type(string2) != type(whole_string):
-        if not isinstance(string1, bytes): string1 = bytes(string1, encoding='ascii')
-        if not isinstance(string2, bytes): string2 = bytes(string2, encoding='ascii')
-        if not isinstance(whole_string, bytes): whole_string = bytes(whole_string, encoding='ascii')
-
-    if string1 not in whole_string:
-        raise ValueError('Whole_string doesn\'t contain string 1')
-    if string2 not in whole_string:
-        raise ValueError('Whole_string doesn\'t contain string 2')
-
-    begin_string_1 = whole_string.find(string1)
-    begin_string_2 = whole_string.find(string2)
-
-    return_value = True if begin_string_1 < begin_string_2 else False
-    return return_value
+    result = query_teams(team_id=1)
+    assert result.name == 'nlb_team_of_bern'
+    assert result.person == query_person('pesche')
+    assert result.league == query_leagues(league_id=2)
