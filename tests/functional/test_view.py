@@ -1,6 +1,7 @@
 from datetime import date, time
 
-from myapp.database_handlers import query_teams, insert_gamedate, query_gamedates, query_person, query_leagues
+from myapp.database_handlers import query_teams, insert_gamedate, query_gamedates, query_person, query_leagues, \
+    query_clubs
 from tests.helpers import is_order_of_strings_in_string_correct
 
 
@@ -118,3 +119,19 @@ def test_update_team_post(test_client, init_database):
     assert result.name == 'nlb_team_of_bern'
     assert result.person == query_person('pesche')
     assert result.league == query_leagues(league_id=2)
+
+
+def test_get_insert_team(test_client):
+    response = test_client.get('/add_new_team')
+
+    assert response.status_code == 200
+
+
+def test_post_insert_team(test_client, init_database):
+    postdata = {'name': 'Bern Damen', 'club': 'SK Bern', 'person': 'Alina', 'league': 'NLA'}
+    response = test_client.post('/add_new_team', data=postdata)
+
+    result = query_teams(team_name='Bern Damen')
+    assert result.club == query_clubs(club_name='SK Bern')
+    assert result.person == query_person(person_name='Alina')
+    assert result.league == query_leagues(league_name='NLA')

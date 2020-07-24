@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, url_for, request, redirect
 
 from myapp.database_handlers import query_teams, query_leagues, query_gamedates, update_gamedates, query_pools, \
-    query_clubs, update_team_instance
+    query_clubs, update_team_instance, insert_team
 from myapp.models import GameDate
 from myapp import db
-from myapp.forms import UpdateGameDate, UpdateTeam
+from myapp import csrf
+from myapp.forms import UpdateGameDate, UpdateTeam, InsertTeam
 from myapp.helpers import StringToDate, StringToTime, ValuesQuerystring
 
 view_bp = Blueprint('view_bp', __name__, template_folder='templates')
@@ -113,10 +114,22 @@ def update_team():
         return render_template('/update_team.html', team=team, update_team=update_team_form)
 
     elif update_team_form.validate_on_submit():
-        update_values = {k: update_team_form.data[k] for k in update_team_form.data if k in ['name', 'person', 'pool', 'league']}
+        update_values = {k: update_team_form.data[k] for k in update_team_form.data if k in
+                         ['name', 'person', 'pool', 'league']}
         update_team_instance(team_id=vqs.team_id, **update_values)
         return redirect(url_for('view_bp.get_allteams'))
 
     else:
         raise Exception(f'request.method is {request.method}\nform is submitted: {update_team_form.is_submitted()}\n'
                         f'form is valid: {update_team_form.validate()}')
+
+
+@view_bp.route('/add_new_team', methods=['GET', 'POST'])
+def add_new_team():
+    add_team = InsertTeam(request.form)
+    if add_team.validate_on_submit():
+        add_values = {k: add_team.data[k] for k in add_team.data if k in ['name', 'person', 'pool', 'league', 'club']}
+        insert_team(**add_values)
+        return redirect(url_for('view_bp.get_allteams'))
+
+    return render_template('/add_team.html', add_team=add_team, csrf_token=csrf)

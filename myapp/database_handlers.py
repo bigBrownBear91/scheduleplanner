@@ -60,7 +60,7 @@ def query_teams(team_id=None, team_name=None, all_entries=False, league_id=None)
     if team_id is not None:
         team = Team.query.get(team_id)
     if team_name is not None:
-        team = Team.query.filter_by(name=team_name).one()
+        team = Team.query.filter_by(name=team_name).one_or_none()
     if all_entries is True:
         team = Team.query.all()
     if league_id is not None:
@@ -228,3 +228,24 @@ def query_person(person_name):
         result = query_person(newperson.name)
 
     return result
+
+
+def insert_team(**kwargs):
+    if not kwargs.get('name'):
+        raise TypeError('A team name must be specified')
+    if not kwargs.get('league'):
+        raise TypeError('Every team needs to play in a league')
+    if not kwargs.get('club'):
+        raise TypeError('Every team has to belong to a club')
+    if query_teams(team_name=kwargs.get('name')):
+        raise ValueError(f'A team with the name {kwargs["name"]} exists already. Choose another name!')
+
+    newteam = Team(kwargs['name'],
+                   query_clubs(club_name=kwargs.get('club')),
+                   query_leagues(league_name=kwargs.get('league')))
+    with db.session.no_autoflush:
+        if kwargs.get('pool'): newteam.pool = query_pools(pool_name=kwargs.get('pool'))
+        if kwargs.get('person'): newteam.person = query_person(kwargs.get('person'))
+
+    db.session.add(newteam)
+    db.session.commit()

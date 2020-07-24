@@ -5,7 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from myapp import db
 from myapp.database_handlers import query_leagues, query_teams, query_gamedates, insert_gamedate, update_gamedates, \
-    query_pools, query_clubs, update_team_instance, query_person
+    query_pools, query_clubs, update_team_instance, query_person, insert_team
 from myapp.models import GameDate, Team, Club, League, Pool, Person
 
 
@@ -270,3 +270,37 @@ def test_update_team_only_pool(init_database):
     assert assertteam.person == query_person('testupdateperson')
     assert assertteam.pool.name == 'Weyerli'
     assert assertteam.league == query_leagues(league_name='NLA')
+
+
+def test_insert_team_name_club_league_given(init_database):
+    insert_team(**{'name': 'Bern 10', 'league': 'NLB', 'club': 'SK Bern'})
+    result = query_teams(team_name='Bern 10')
+
+    assert result.name == 'Bern 10'
+    assert result.league == query_leagues(league_name='NLB')
+    assert result.club == query_clubs(club_name='SK Bern')
+
+
+def test_insert_team_name_person_pool_club_league_given(init_database):
+    insert_team(**{'name': 'Bern 11', 'person': 'Momcilo', 'pool': 'Weyerli', 'league': 'NLB', 'club': 'SK Bern'})
+    result = query_teams(team_name='Bern 11')
+
+    assert result.name == 'Bern 11'
+    assert result.league == query_leagues(league_name='NLB')
+    assert result.person == query_person(person_name='Momcilo')
+    assert result.club == query_clubs(club_name='SK Bern')
+
+
+def test_insert_team_exception_no_name(init_database):
+    with pytest.raises(TypeError):
+        insert_team(**{'person': 'Pesche', 'pool': 'Weyerli', 'league': 'NLB', 'club': 'SK Bern'})
+
+
+def test_insert_team_exception_league_and_club(init_database):
+    with pytest.raises(TypeError):
+        insert_team(**{'name': 'Bern 10', 'person': 'Pesche'})
+
+
+def test_insert_team_teamname_already_given(init_database):
+    with pytest.raises(ValueError):
+        insert_team(**{'name': 'Bern 1', 'club': 'SK Bern', 'league': 'NLB'})

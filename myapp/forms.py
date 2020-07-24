@@ -19,3 +19,10 @@ class UpdateTeam(FlaskForm):
     submit = SubmitField('Submit')
 
 
+class InsertTeam(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    person = StringField('Person')
+    pool = StringField('Pool')
+    league = StringField('League', validators=[DataRequired()])
+    club = StringField('Club', validators=[DataRequired()])
+    submit = SubmitField('Submit')

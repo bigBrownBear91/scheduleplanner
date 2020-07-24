@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block content %}
+ <div class="container">
+     <form action="/add_new_team" method="post">
+        {{ add_team.hidden_tag() }}
+         <div class="row">
+             <div class="col-12">
+                 {{ render_field(add_team.name) }}
+             </div>
+         </div>
+         <div class="row">
+             <div class="col-12">
+                 {{ render_field(add_team.club) }}
+             </div>
+         </div>
+         <div class="row">
+             <div class="col-12">
+                 {{ render_field(add_team.league) }}
+             </div>
+         </div>
+         <div class="row">
+             <div class="col-12">
+                 {{ render_field(add_team.person) }}
+             </div>
+         </div>
+         <div class="row">
+             <div class="col-12">
+                 {{ render_field(add_team.pool) }}
+             </div>
+         </div>
+         <div class="row">
+             <div class="col-12">
+                 {{ render_field(add_team.submit) }}
+             </div>
+         </div>
+     </form>
+
+ </div>
+{% endblock %}
