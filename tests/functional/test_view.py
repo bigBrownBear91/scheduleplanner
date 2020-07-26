@@ -11,7 +11,7 @@ def test_get_index(test_client, init_database):
     WHEN '/' is requested
     THEN check whether the response is valid
     """
-    response = test_client.get('/')
+    response = test_client.get('/?league_id=1')
     assert response.status_code == 200
     assert b'Bern 1' in response.data
 
@@ -71,7 +71,7 @@ def test_update_gamedates_from_scheduleplanner(test_client, init_database):
     assert response.status_code == 302
 
 
-def test_overview_all_teams(test_client, init_database):
+def test_overview_all_teams(test_client):
     """
     GIVEN a get request for the url /all_teams
     THEN all test teams are listed ordered by club names and teamnames and status code is 200
@@ -87,7 +87,7 @@ def test_overview_all_teams(test_client, init_database):
     assert is_order_of_strings_in_string_correct(b'Bern 1', b'Bern 2', response.data)
 
 
-def test_overview_all_teams_links_are_working(test_client, init_database):
+def test_overview_all_teams_links_are_working(test_client):
     """
     GIVEN a get request for the url /all_teams
     THEN links for all test teams to an update page for the teams respectivley club are generated
@@ -99,14 +99,14 @@ def test_overview_all_teams_links_are_working(test_client, init_database):
     assert b'href="/update_team?team_id=2' in response.data
 
 
-def test_update_team_get(test_client, init_database):
+def test_update_team_get(test_client):
     response = test_client.get('/update_team?team_id=1')
 
     assert response.status_code == 200
     assert b'Bern 1' in response.data
 
 
-def test_update_team_post(test_client, init_database):
+def test_update_team_post(test_client):
     """
     GIVEN team1 with name: Bern1, league: NLB and no person
     WHEN post to update team to name: nlb_team_of_bern, person: pesche and league: NLA
@@ -127,7 +127,7 @@ def test_get_insert_team(test_client):
     assert response.status_code == 200
 
 
-def test_post_insert_team(test_client, init_database):
+def test_post_insert_team(test_client):
     postdata = {'name': 'Bern Damen', 'club': 'SK Bern', 'person': 'Alina', 'league': 'NLA'}
     response = test_client.post('/add_new_team', data=postdata)
 
@@ -135,3 +135,11 @@ def test_post_insert_team(test_client, init_database):
     assert result.club == query_clubs(club_name='SK Bern')
     assert result.person == query_person(person_name='Alina')
     assert result.league == query_leagues(league_name='NLA')
+
+
+def test_get_league_overview(test_client):
+    response = test_client.get('/league_overview')
+
+    assert response.status_code == 200
+    assert b'NLB' in response.data
+    assert b'NLA' in response.data

@@ -57,14 +57,15 @@ def query_teams(team_id=None, team_name=None, all_entries=False, league_id=None)
     if team_id is None and team_name is None and all_entries is False and league_id is None:
         raise ValueError('One of The Parameters has to be specified')
 
-    if team_id is not None:
+    if team_id:
         team = Team.query.get(team_id)
-    if team_name is not None:
+    if team_name:
         team = Team.query.filter_by(name=team_name).one_or_none()
     if all_entries is True:
         team = Team.query.all()
-    if league_id is not None:
-        team = Team.query.filter_by(league_id=league_id).all()
+    if league_id:
+        league = League.query.get(league_id)
+        team = Team.query.filter_by(league=league).all()
 
     return team
 

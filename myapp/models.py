@@ -43,7 +43,7 @@ class Team(db.Model):
     club = db.relationship('Club', backref='clubs')
     person = db.relationship('Person', backref='teams')
     pool = db.relationship('Pool', backref='pools')
-    league = db.relationship('League', backref='leagues')
+    league = db.relationship('League', backref='leagues', lazy='joined')
 
     def __init__(self, name, club, league, person=None, pool=None):
         """
@@ -60,7 +60,7 @@ class Team(db.Model):
         self.pool = pool
 
     def __repr__(self):
-        return f'id:{self.id}, name:{self.name}, person:{self.person.name}, pool:{self.pool.name}'
+        return f'id:{self.id}, name:{self.name}'
 
 
 class Pool(db.Model):

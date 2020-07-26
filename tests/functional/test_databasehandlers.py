@@ -34,6 +34,12 @@ def test_query_leagues_id_not_in_db(init_database):
         query_leagues(league_id=5)
 
 
+def test_query_leagues_all_entries(init_database):
+    result = query_leagues(all_entries=True)
+
+    assert result == [League.query.get(1), League.query.get(2)]
+
+
 def test_query_teams_id_and_name_both_specified(init_database):
     with pytest.raises(ValueError):
         query_teams(1, 'Bern')
@@ -76,13 +82,16 @@ def test_query_teams_all_teams(init_database):
     assert isinstance(teams, list)
     assert teams[0].id == 1
     assert teams[0].name == 'Bern 1'
+    assert teams == Team.query.all()
 
 
 def test_query_teams_search_all_of_league(init_database):
-    teams = query_teams(league_id=1)
+    teams = query_teams(league_id=2)
+
     assert isinstance(teams, list)
-    assert teams[0].id == 1
-    assert teams[0].name == 'Bern 1'
+    assert teams[0].name == 'Lugano1'
+    assert teams[1].name == 'Lugano2'
+    assert set(teams) == {Team.query.get(6), Team.query.get(7)}
 
 
 def test_query_teams_no_parameter_specified(init_database):

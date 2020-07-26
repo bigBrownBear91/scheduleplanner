@@ -1,5 +1,6 @@
 import datetime
 
+
 class ValuesQuerystring:
     def __init__(self, url):
         """

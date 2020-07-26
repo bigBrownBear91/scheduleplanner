@@ -11,13 +11,14 @@ from myapp.helpers import StringToDate, StringToTime, ValuesQuerystring
 view_bp = Blueprint('view_bp', __name__, template_folder='templates')
 
 
-@view_bp.route('/', methods=['GET'])
+@view_bp.route('/teams_in_league', methods=['GET'])
 def get_index_page():
-    league = query_leagues(league_name='NLB')
-    all_leagues = query_leagues(all_entries=True)
-    teams = query_teams(league_id=league.id)
+    # league = query_leagues(league_name='NLB')
+    league = ValuesQuerystring(request.url)
+    # all_leagues = query_leagues(all_entries=True)
+    teams = query_teams(league_id=league.league_id)
 
-    return render_template('index.html', leagues=all_leagues, teams=teams)
+    return render_template('index.html', league=league, teams=teams)
 
 
 @view_bp.route('/scheduleplanner', methods=['GET'])
@@ -133,3 +134,10 @@ def add_new_team():
         return redirect(url_for('view_bp.get_allteams'))
 
     return render_template('/add_team.html', add_team=add_team, csrf_token=csrf)
+
+
+@view_bp.route('/', methods=['GET'])
+def league_overview():
+    leagues = query_leagues(all_entries=True)
+
+    return render_template('league_overview.html', leagues=leagues)
