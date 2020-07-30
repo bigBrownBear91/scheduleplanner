@@ -85,13 +85,20 @@ def test_query_teams_all_teams(init_database):
     assert teams == Team.query.all()
 
 
-def test_query_teams_search_all_of_league(init_database):
+def test_query_teams_search_all_of_league_leagueid_2(init_database):
     teams = query_teams(league_id=2)
 
     assert isinstance(teams, list)
     assert teams[0].name == 'Lugano1'
     assert teams[1].name == 'Lugano2'
     assert set(teams) == {Team.query.get(6), Team.query.get(7)}
+
+
+def test_query_team_search_leagueid_1(init_database):
+    nlb_teams = query_teams(league_id=1)
+
+    assert set(nlb_teams) == {query_teams(team_name='Bern 1'), query_teams(team_name='Bern 2'), query_teams(team_name='Bern 3'),
+                     query_teams(team_name='Newteam'), query_teams(team_name='Anothernewteam')}
 
 
 def test_query_teams_no_parameter_specified(init_database):

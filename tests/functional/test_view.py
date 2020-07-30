@@ -5,25 +5,25 @@ from myapp.database_handlers import query_teams, insert_gamedate, query_gamedate
 from tests.helpers import is_order_of_strings_in_string_correct
 
 
-def test_get_index(test_client, init_database):
+def test_get_index(test_client):
     """
     GIVEN a flask app
     WHEN '/' is requested
     THEN check whether the response is valid
     """
-    response = test_client.get('/?league_id=1')
+    response = test_client.get('/teams_in_league?league_id=1')
     assert response.status_code == 200
     assert b'Bern 1' in response.data
 
 
-def test_get_scheduleplanner_all_teams(test_client, init_database):
+def test_get_scheduleplanner_all_teams(test_client):
     response = test_client.get('/scheduleplanner?schedule_for_team=1')
     assert response.status_code == 200
     assert b'Bern 1' in response.data
     assert b'Bern 2' in response.data
 
 
-def test_get_scheduleplanner_gamedate_of_one_team(test_client, init_database):
+def test_get_scheduleplanner_gamedate_of_one_team(test_client):
     response = test_client.get('/scheduleplanner?schedule_for_team=1&second_team_id=2')
     assert response.status_code == 200
     assert b'Bern 1' in response.data
@@ -31,7 +31,7 @@ def test_get_scheduleplanner_gamedate_of_one_team(test_client, init_database):
     assert b'KaWeDe' in response.data
 
 
-def test_update_gamedates_from_scheduleplanner(test_client, init_database):
+def test_update_gamedates_from_scheduleplanner(test_client):
     """
     GIVEN a form with updates for a home and away game
     WHEN a post request for the url /scheduleplanner is made
@@ -138,7 +138,7 @@ def test_post_insert_team(test_client):
 
 
 def test_get_league_overview(test_client):
-    response = test_client.get('/league_overview')
+    response = test_client.get('/')
 
     assert response.status_code == 200
     assert b'NLB' in response.data
