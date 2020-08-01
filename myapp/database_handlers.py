@@ -1,3 +1,4 @@
+from sqlalchemy import or_
 from sqlalchemy.orm.exc import NoResultFound
 
 from myapp import db
@@ -171,10 +172,9 @@ def query_clubs(club_id=None, club_name=None, all_entries=False):
         return club
 
     elif club_name:
-        try:
-            club = Club.query.filter_by(name=club_name).one()
-        except NoResultFound:
-            raise NoResultFound(f'The club {club_name} is not known or there is a typo in the club name')
+        club = Club.query.filter_by(name=club_name).one_or_none()
+        if club is None:
+            return None
 
         teams = Team.query.filter_by(club=club).order_by(Team.name).all()
         club.__setattr__('teams', teams)
@@ -240,6 +240,10 @@ def insert_team(**kwargs):
         raise TypeError('Every team has to belong to a club')
     if query_teams(team_name=kwargs.get('name')):
         raise ValueError(f'A team with the name {kwargs["name"]} exists already. Choose another name!')
+    if not query_leagues(league_name=kwargs.get('league')):
+        raise ValueError('Every team must be in a league')
+    if not query_clubs(club_name=kwargs.get('club')):
+        insert_club(kwargs.get('club'))
 
     newteam = Team(kwargs['name'],
                    query_clubs(club_name=kwargs.get('club')),
@@ -249,4 +253,26 @@ def insert_team(**kwargs):
         if kwargs.get('person'): newteam.person = query_person(kwargs.get('person'))
 
     db.session.add(newteam)
+    db.session.commit()
+
+
+def insert_club(club_name):
+    if query_clubs(club_name=club_name) is not None:
+        raise ValueError(f'Club {club_name} is already in the database')
+
+    new_club = Club(club_name)
+    db.session.add(new_club)
+    db.session.commit()
+
+
+def delete_team(team_id):
+    if query_teams(team_id) is None:
+        raise ValueError(f'Team with id {team_id} is not existent, hence cannot be deleted')
+
+    deleting_team = query_teams(team_id)
+    games = GameDate.query.filter(or_(GameDate.home_team == deleting_team), GameDate.guest_team == deleting_team).all()
+    if len(games) > 0:
+        db.session.delete(games)
+
+    db.session.delete(deleting_team)
     db.session.commit()

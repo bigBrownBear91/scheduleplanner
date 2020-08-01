@@ -1,11 +1,11 @@
 from flask import Blueprint, render_template, url_for, request, redirect
 
 from myapp.database_handlers import query_teams, query_leagues, query_gamedates, update_gamedates, query_pools, \
-    query_clubs, update_team_instance, insert_team
+    query_clubs, update_team_instance, insert_team, insert_club, delete_team
 from myapp.models import GameDate
 from myapp import db
 from myapp import csrf
-from myapp.forms import UpdateGameDate, UpdateTeam, InsertTeam
+from myapp.forms import UpdateGameDate, UpdateTeam, InsertTeam, InsertClub
 from myapp.helpers import StringToDate, StringToTime, ValuesQuerystring
 
 view_bp = Blueprint('view_bp', __name__, template_folder='templates')
@@ -141,3 +141,29 @@ def league_overview():
     leagues = query_leagues(all_entries=True)
 
     return render_template('league_overview.html', leagues=leagues)
+
+
+@view_bp.route('/add_club', methods=['GET', 'POST'])
+def add_club():
+    add_club = InsertClub(request.form)
+    if add_club.validate_on_submit():
+        if add_club.existing_clubs.data is None and add_club.name.data is not None:
+            insert_club(club_name=add_club.name.data)
+            return redirect(url_for('view_bp.add_new_team'))
+        elif add_club.existing_clubs.data != 'None' and add_club.name.data == '':
+            return f'The club <b>{add_club.existing_clubs.data}</b> is already existing. Copy the name of the club and click ' \
+                   f'<a href="/add_new_team"> here </a> to return to the add_team-page'
+        else:
+            raise Exception(f'Value of existing clubs is {add_club.existing_clubs.data} and name of the new club is '
+                            f'{add_club.name.data}')
+
+    return render_template('/add_club.html', add_club=add_club)
+
+
+@view_bp.route('/delete_team')
+def delete_given_team():
+    referer = request.headers.get('Referer')
+    deleting_team = ValuesQuerystring(request.url)
+    delete_team(team_id=deleting_team.team_id)
+
+    return redirect(referer)

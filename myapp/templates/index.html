@@ -19,11 +19,14 @@
 <div class="container">
     {% for team in teams %}
     <div class="row">
-        <div class="col-6">
+        <div class="col-4">
             <div id={{ team.name }}>{{ team.name }}</div>
         </div>
-        <div class="col-6">
+        <div class="col-4">
             <div><a href="/scheduleplanner?schedule_for_team={{ team.id }}">Display game schedule</a></div>
+        </div>
+        <div class="col-4">
+            <div><a href="/delete_team?team_id={{ team.id }}">Delete team</a></div>
         </div>
     </div>
     {% endfor %}

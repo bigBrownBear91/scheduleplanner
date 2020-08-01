@@ -26,11 +26,14 @@
         </div>
         {% for team in club.teams %}
         <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-4">
                 <p style="padding: 10px; top-margin:1px" id="{{ team.id }}">{{ team.name }}</p>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-4">
                 <a href="{{ url_for('view_bp.update_team', team_id=team.id) }}">Update</a>
+            </div>
+            <div class="col-12 col-md-4">
+                <a href="/delete_team?team_id={{ team.id }}">Delete team</a>
             </div>
         </div>
         {% endfor %}

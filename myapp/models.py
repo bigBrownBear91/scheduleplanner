@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import backref
 
 db = SQLAlchemy()
 
@@ -92,8 +93,8 @@ class GameDate(db.Model):
     home_team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     guest_team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     pool = db.relationship('Pool', backref='gamedates')
-    home_team = db.relationship('Team', backref='home_teams', foreign_keys=[home_team_id])
-    guest_team = db.relationship('Team', backref='guest_teams', foreign_keys=[guest_team_id])
+    home_team = db.relationship('Team', backref=backref('home_teams', cascade="all, delete"), foreign_keys=[home_team_id])
+    guest_team = db.relationship('Team', backref=backref('guest_teams', cascade="all, delete"), foreign_keys=[guest_team_id])
 
     def __init__(self, date, time, pool, home_team, guest_team):
         """

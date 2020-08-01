@@ -5,7 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from myapp import db
 from myapp.database_handlers import query_leagues, query_teams, query_gamedates, insert_gamedate, update_gamedates, \
-    query_pools, query_clubs, update_team_instance, query_person, insert_team
+    query_pools, query_clubs, update_team_instance, query_person, insert_team, insert_club, delete_team
 from myapp.models import GameDate, Team, Club, League, Pool, Person
 
 
@@ -247,8 +247,9 @@ def test_query_clubs_more_than_one_parameter(init_database):
 
 
 def test_query_club_unknown_club_name(init_database):
-    with pytest.raises(NoResultFound):
-        query_clubs(club_name='UnknownPool')
+    result = query_clubs(club_name='UnknownPool')
+
+    assert result is None
 
 
 def test_update_team_everything_nullable_is_null(init_database):
@@ -320,3 +321,30 @@ def test_insert_team_exception_league_and_club(init_database):
 def test_insert_team_teamname_already_given(init_database):
     with pytest.raises(ValueError):
         insert_team(**{'name': 'Bern 1', 'club': 'SK Bern', 'league': 'NLB'})
+
+
+def test_insert_club(init_database):
+    insert_club('Horgen')
+
+    assert query_clubs(club_name='Horgen').name == 'Horgen'
+
+
+def test_insert_existing_club(init_database):
+    """
+    WHEN inserting a club with a name which already exists
+    THEN raise a Value Error
+    """
+    with pytest.raises(ValueError):
+        insert_club('SK Bern')
+
+
+def test_delete_team_if_gamedates_exist(init_database):
+    delete_team(team_id=1)
+
+    assert query_teams(team_id=1) is None
+
+
+def test_delete_team_if_no_gamedates_exist(init_database):
+    delete_team(team_id=5)
+
+    assert query_teams(team_id=5) is None

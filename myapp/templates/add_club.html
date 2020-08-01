@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block content %}
+<div class="container">
+    <p>Do you mean any of the following clubs? If so, choose one. Otherwise register a new club!</p>
+    <p>[Existing Clubs here]</p>
+</div>
+<div class="container">
+    <form action="/add_club" method="post">
+        {{ add_club.hidden_tag() }}
+        <div class="row">
+            <div class="col-12">
+                {{ render_field(add_club.existing_clubs) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {{ render_field(add_club.name) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {{ render_field(add_club.submit) }}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

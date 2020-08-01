@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, DateField, TimeField, SubmitField
+from wtforms import StringField, DateField, TimeField, SubmitField, SelectField
 from wtforms.validators import DataRequired
+
+from myapp.database_handlers import query_clubs
 
 
 class UpdateGameDate(FlaskForm):
@@ -25,4 +27,11 @@ class InsertTeam(FlaskForm):
     pool = StringField('Pool')
     league = StringField('League', validators=[DataRequired()])
     club = StringField('Club', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+
+class InsertClub(FlaskForm):
+    existing_clubs = SelectField('Existing Clubs', validate_choice=False,
+                                 choices=['None'] + [club.name for club in query_clubs(all_entries=True)])
+    name = StringField('Name')
     submit = SubmitField('Submit')

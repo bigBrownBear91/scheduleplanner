@@ -1,5 +1,7 @@
 from datetime import date, time
 
+import mock
+
 from myapp.database_handlers import query_teams, insert_gamedate, query_gamedates, query_person, query_leagues, \
     query_clubs
 from tests.helpers import is_order_of_strings_in_string_correct
@@ -14,6 +16,8 @@ def test_get_index(test_client):
     response = test_client.get('/teams_in_league?league_id=1')
     assert response.status_code == 200
     assert b'Bern 1' in response.data
+    assert b'Delete' in response.data
+    assert b'<a href="/delete_team?team_id=1"'in response.data
 
 
 def test_get_scheduleplanner_all_teams(test_client):
@@ -85,6 +89,8 @@ def test_overview_all_teams(test_client):
     assert b'Lugano1' and b'Lugano1' in response.data
     assert is_order_of_strings_in_string_correct('Lugano Pallanuoto', 'SK Bern', response.data) is True
     assert is_order_of_strings_in_string_correct(b'Bern 1', b'Bern 2', response.data)
+    assert b'Delete' in response.data
+    assert b'<a href="/delete_team?team_id=1"' in response.data
 
 
 def test_overview_all_teams_links_are_working(test_client):
@@ -143,3 +149,24 @@ def test_get_league_overview(test_client):
     assert response.status_code == 200
     assert b'NLB' in response.data
     assert b'NLA' in response.data
+
+
+def test_add_club_get(test_client):
+    response = test_client.get('/add_club')
+
+    assert response.status_code == 200
+
+
+def test_add_club_post(test_client):
+    postdata = {'name': 'Horgen'}
+    response = test_client.post('/add_club', data=postdata)
+
+    assert query_clubs(club_name='Horgen').name == 'Horgen'
+
+
+@mock.patch('requests.get', mock.Mock(side_effect={'url': '/delete_team?team_id=1', 'Referer': '/all_teams'}))
+def test_delete_team(test_client):
+    response = test_client.get('/delete_team?team_id=2')
+
+    assert response.status_code == 302
+    assert query_teams(team_id=2) is None
