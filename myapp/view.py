@@ -13,10 +13,9 @@ view_bp = Blueprint('view_bp', __name__, template_folder='templates')
 
 @view_bp.route('/teams_in_league', methods=['GET'])
 def get_index_page():
-    # league = query_leagues(league_name='NLB')
-    league = ValuesQuerystring(request.url)
-    # all_leagues = query_leagues(all_entries=True)
-    teams = query_teams(league_id=league.league_id)
+    league_id = ValuesQuerystring(request.url)
+    league = query_leagues(league_id=league_id.league_id)
+    teams = query_teams(league_id=league.id)
 
     return render_template('index.html', league=league, teams=teams)
 

@@ -2,6 +2,8 @@ from datetime import date, time
 
 import mock
 
+from myapp import db
+import myapp.models as models
 from myapp.database_handlers import query_teams, insert_gamedate, query_gamedates, query_person, query_leagues, \
     query_clubs
 from tests.helpers import is_order_of_strings_in_string_correct
@@ -135,7 +137,7 @@ def test_get_insert_team(test_client):
 
 def test_post_insert_team(test_client):
     postdata = {'name': 'Bern Damen', 'club': 'SK Bern', 'person': 'Alina', 'league': 'NLA'}
-    response = test_client.post('/add_new_team', data=postdata)
+    response = test_client.post('/add_new_team', data=postdata, follow_redirects=True)
 
     result = query_teams(team_name='Bern Damen')
     assert result.club == query_clubs(club_name='SK Bern')

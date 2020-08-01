@@ -28,7 +28,7 @@ def query_leagues(league_id=None, league_name=None, all_entries=False):
         if not isinstance(league, League):
             raise ValueError(f'Element with id {league_id} is not in database')
     if league_name is not None:
-        league = League.query.filter_by(name=league_name).one()
+        league = League.query.filter_by(name=league_name).one_or_none()
         if not isinstance(league, League):
             raise ValueError(f'Element with name {league_name} is not in database')
     if all_entries is True:
