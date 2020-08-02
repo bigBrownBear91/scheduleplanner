@@ -34,7 +34,7 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <form action="/add_new_team" method="post" id="add_team">
+            <form action="/add_new_team" method="get" id="add_team">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
                 <button class="btn-primary" form="add_team" type="submit">Add new team</button>
