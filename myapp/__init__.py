@@ -19,6 +19,7 @@ def create_app(config=None):
     session.init_app(app)
 
     with app.app_context():
+        db.create_all()
         import myapp.view
         app.register_blueprint(view.view_bp)
 
