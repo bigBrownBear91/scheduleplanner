@@ -89,12 +89,11 @@ class GameDate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=True)
     time = db.Column(db.Time, nullable=True)
-    pool_id = db.Column(db.Integer, db.ForeignKey('pools.id'), nullable=True)
+    pool = db.Column(db.String(100), nullable=True)
     home_team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     guest_team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     home_team = db.relationship('Team', backref=backref('home_teams', cascade="all, delete"), foreign_keys=[home_team_id])
     guest_team = db.relationship('Team', backref=backref('guest_teams', cascade="all, delete"), foreign_keys=[guest_team_id])
-    pool = db.relationship('Pool', backref='gamedates')
 
     def __init__(self, date, time, pool, home_team, guest_team):
         """

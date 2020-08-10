@@ -39,8 +39,7 @@ def test_get_scheduleplanner_gamedate_of_one_team(test_client):
 
 def test_update_gamedates_from_scheduleplanner(test_client):
     """
-    GIVEN a form with updates for a home and away game
-    WHEN a post request for the url /scheduleplanner is made
+    GIVEN a post request on the url /scheduleplanner to update a gamedate
     THEN updates the gamedates of the given games and redirects to all games of the schedule-for team
     """
     team1 = query_teams(team_name='Bern 1')

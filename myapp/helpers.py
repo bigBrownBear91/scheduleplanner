@@ -62,12 +62,15 @@ class RepresentationGame:
         self.gruppe = 'None'
         self.untergruppe = game.date.month
         self.heim = game.home_team.name
-        self.gast = game.guest_team.hame
-        self.ort = game.pool.name
+        self.gast = game.guest_team.name
+        self.ort = game.pool
 
     def __str__(self):
-        return f'{self.date.strftime("%d.%m.%y")},{self.time.strftime("%h.%m")},{self.gruppe},{str(self.untergruppe)},' \
+        return f'{self.date.strftime("%d.%m.%y")},{self.time.strftime("%H.%M")},{self.gruppe},{str(self.untergruppe)},' \
                f'{self.heim},{self.gast},{self.ort}'
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class Schedule:
@@ -80,3 +83,6 @@ class Schedule:
             for guestteam in [team for team in teams if team != hometeam]:
                 repr_game = RepresentationGame(hometeam, guestteam)
                 self.all_games.append(repr_game)
+
+    def __repr__(self):
+        return str([game for game in self.all_games])

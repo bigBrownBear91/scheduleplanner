@@ -13,10 +13,12 @@
     </div>
 </div>
 <div class="container">
+    {% for game in games %}
     <div class="row">
         <div class="col-12">
-            {{ string_of_games }}
+            {{ game }}
         </div>
     </div>
+    {% endfor %}
 </div>
-{% end block %}
+{% endblock %}

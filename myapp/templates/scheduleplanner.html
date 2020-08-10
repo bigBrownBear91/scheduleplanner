@@ -27,6 +27,8 @@
     </div>
 {% else %}
     <form action="/scheduleplanner" method="post">
+        {{ home_game_form.hidden_tag() }}
+        {{ guest_game_form.hidden_tag() }}
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-2">

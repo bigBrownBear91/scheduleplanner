@@ -49,7 +49,7 @@ def get_scheduleplanner_page():
         if home_game.date is not None:
             home_game_form.date.data = home_game.date
         if home_game.time is not None: home_game_form.time.data = home_game.time
-        if home_game.pool is not None: home_game_form.pool.data = home_game.pool.name
+        if home_game.pool is not None: home_game_form.pool.data = home_game.pool
         home_game_form.home_team.id = 'home_hometeam'
         home_game_form.guest_team.id = 'home_guestteam'
         home_game_form.date.id = 'home_date'
@@ -61,7 +61,7 @@ def get_scheduleplanner_page():
         guest_game_form.guest_team.data = schedule_for_team.name
         if guest_game.date is not None: guest_game_form.date.data = guest_game.date
         if guest_game.time is not None: guest_game_form.time.data = guest_game.time
-        if guest_game.pool is not None: guest_game_form.pool.data = guest_game.pool.name
+        if guest_game.pool is not None: guest_game_form.pool.data = guest_game.pool
         guest_game_form.home_team.id = 'guest_hometeam'
         guest_game_form.guest_team.id = 'guest_guestteam'
         guest_game_form.date.id = 'guest_date'
@@ -77,8 +77,8 @@ def update_gamedates_from_scheduleplanner():
     schedule_for_team = query_teams(team_name=update_gamedate_form['home_hometeam'])
     second_team = query_teams(team_name=update_gamedate_form['home_guestteam'])
     # "home" refers to the team that is scheduling his games while "guest" means the other team
-    home_pool = query_pools(pool_name=update_gamedate_form['home_pool'])
-    away_pool = query_pools(pool_name=update_gamedate_form['guest_pool'])
+    home_pool = update_gamedate_form['home_pool']
+    away_pool = update_gamedate_form['guest_pool']
 
     # Update homegame
     update_gamedates(schedule_for_team, second_team, StringToDate(update_gamedate_form['home_date']).date_as_date,
@@ -173,10 +173,6 @@ def delete_given_team():
 @view_bp.route('/leagueschedule/<int:league_id>', methods=['GET'])
 def league_schedule(league_id):
     schedule = Schedule(league_id=league_id)
-    list_of_games_as_strings = [(game.__str__ + '\n') for game in schedule.all_games]
-    string_of_games = str()
-    string_of_games.join(list_of_games_as_strings)
-
     league = query_leagues(league_id=league_id)
 
-    return render_template('leagueschedule.html', league=league, string_of_games=string_of_games)
+    return render_template('leagueschedule.html', league=league, games=schedule.all_games)
