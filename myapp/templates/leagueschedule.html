@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2>All games of league {{ league.name }} as csv</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <p>Copy all entries below and import them into an excel spreadsheet as comma separated values</p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            {{ string_of_games }}
+        </div>
+    </div>
+</div>
+{% end block %}

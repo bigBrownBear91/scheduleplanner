@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy import types
 
 from myapp.models import Club, Team, Person, Pool, GameDate, League
+import myapp.database_handlers as db_handlers
 
 
 @pytest.fixture(scope='module')
@@ -73,3 +74,19 @@ def test_create_instance_game_date(new_pool, new_team_with_person_and_pool):
     assert isinstance(game_date.home_team.person, Person)
     assert game_date.date == date(2020, 6, 21)
     assert game_date.home_team.person.name == 'Danilo Bigovic'
+
+
+def test_gamedate_is_complete_True(new_pool):
+    hometeam = Team(name='Bern 1', club=Club('SK Bern'), league=League('NLB'))
+    guestteam = Team(name='SP Bissone', club=Club('Bissone'), league=League('NLB'))
+    game = GameDate(date(2020, 6, 20), time(20, 00, 00), new_pool, hometeam, guestteam)
+
+    assert game.is_complete() is True
+
+
+def test_gamedate_is_complete_false():
+    hometeam = Team(name='Bern 1', club=Club('SK Bern'), league=League('NLB'))
+    guestteam = Team(name='SP Bissone', club=Club('Bissone'), league=League('NLB'))
+    game = GameDate(date(2020, 6, 4), None, None, hometeam, guestteam)
+
+    assert game.is_complete() is False

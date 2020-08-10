@@ -1,5 +1,7 @@
 import datetime
 
+import myapp.database_handlers as db_handlers
+
 
 class ValuesQuerystring:
     def __init__(self, url):
@@ -49,3 +51,32 @@ class StringToTime:
         self.time_as_time = None
 
         self.time_as_time = datetime.datetime.strptime(self.time_as_string, '%H.%M').time()
+
+
+class RepresentationGame:
+    def __init__(self, hometeam, guestteam):
+        game = db_handlers.query_gamedates(hometeam, guestteam)
+
+        self.date = game.date
+        self.time = game.time
+        self.gruppe = 'None'
+        self.untergruppe = game.date.month
+        self.heim = game.home_team.name
+        self.gast = game.guest_team.hame
+        self.ort = game.pool.name
+
+    def __str__(self):
+        return f'{self.date.strftime("%d.%m.%y")},{self.time.strftime("%h.%m")},{self.gruppe},{str(self.untergruppe)},' \
+               f'{self.heim},{self.gast},{self.ort}'
+
+
+class Schedule:
+    def __init__(self, league_id):
+        self.all_games = []
+
+        teams = db_handlers.query_teams(league_id=league_id)
+
+        for hometeam in teams:
+            for guestteam in [team for team in teams if team != hometeam]:
+                repr_game = RepresentationGame(hometeam, guestteam)
+                self.all_games.append(repr_game)

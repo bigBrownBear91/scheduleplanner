@@ -5,7 +5,7 @@ from myapp.database_handlers import query_teams, query_leagues, query_gamedates,
 from myapp.models import GameDate
 from myapp import csrf, db
 from myapp.forms import UpdateGameDate, UpdateTeam, InsertTeam, InsertClub
-from myapp.helpers import StringToDate, StringToTime, ValuesQuerystring
+from myapp.helpers import StringToDate, StringToTime, ValuesQuerystring, Schedule
 
 view_bp = Blueprint('view_bp', __name__, template_folder='templates')
 
@@ -168,3 +168,15 @@ def delete_given_team():
     delete_team(team_id=deleting_team.team_id)
 
     return redirect(referer)
+
+
+@view_bp.route('/leagueschedule/<int:league_id>', methods=['GET'])
+def league_schedule(league_id):
+    schedule = Schedule(league_id=league_id)
+    list_of_games_as_strings = [(game.__str__ + '\n') for game in schedule.all_games]
+    string_of_games = str()
+    string_of_games.join(list_of_games_as_strings)
+
+    league = query_leagues(league_id=league_id)
+
+    return render_template('leagueschedule.html', league=league, string_of_games=string_of_games)

@@ -92,9 +92,9 @@ class GameDate(db.Model):
     pool_id = db.Column(db.Integer, db.ForeignKey('pools.id'), nullable=True)
     home_team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     guest_team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
-    pool = db.relationship('Pool', backref='gamedates')
     home_team = db.relationship('Team', backref=backref('home_teams', cascade="all, delete"), foreign_keys=[home_team_id])
     guest_team = db.relationship('Team', backref=backref('guest_teams', cascade="all, delete"), foreign_keys=[guest_team_id])
+    pool = db.relationship('Pool', backref='gamedates')
 
     def __init__(self, date, time, pool, home_team, guest_team):
         """
@@ -111,6 +111,12 @@ class GameDate(db.Model):
         self.pool = pool
         self.home_team = home_team
         self.guest_team = guest_team
+
+    def is_complete(self):
+        """Returns True if every attribute is set."""
+        if self.date and self.time and self.pool and self.home_team and self.guest_team:
+            return True
+        return False
 
     def __repr__(self):
         return f'id:{self.id}, date:{self.date}, pool:{self.pool.name}, home_team:{self.home_team.name}, guest_team:' \

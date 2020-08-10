@@ -172,3 +172,11 @@ def test_delete_team(test_client):
 
     assert response.status_code == 302
     assert query_teams(team_id=2) is None
+
+
+def test_league_schedule(test_client):
+    response = test_client.get('/leagueschedule/2')
+
+    assert response.status_code == 200
+    assert 'Bern 1' in response.data
+    assert '21.06.2020' in response.data

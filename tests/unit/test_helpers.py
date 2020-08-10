@@ -1,7 +1,9 @@
 from datetime import date, time
-import pytest
+import mock
 
-from myapp.helpers import ValuesQuerystring, StringToDate, StringToTime
+from myapp.helpers import ValuesQuerystring, StringToDate, StringToTime, RepresentationGame
+from myapp.database_handlers import query_gamedates
+import myapp.models as models
 
 
 def test_valueQueryStringInts():
