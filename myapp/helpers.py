@@ -57,17 +57,16 @@ class RepresentationGame:
     def __init__(self, hometeam, guestteam):
         game = db_handlers.query_gamedates(hometeam, guestteam)
 
-        self.date = game.date
-        self.time = game.time
-        self.gruppe = 'None'
-        self.untergruppe = game.date.month
-        self.heim = game.home_team.name
-        self.gast = game.guest_team.name
-        self.ort = game.pool
+        self.date = game.date.strftime("%d.%m.%y") if game.date else ''
+        self.time = game.time.strftime("%H.%M") if game.time else ''
+        self.gruppe = ''
+        self.untergruppe = game.date.strftime('%B') if game.date else ''
+        self.heim = str(game.home_team.name)
+        self.gast = str(game.guest_team.name)
+        self.ort = str(game.pool) if game.pool else ''
 
     def __str__(self):
-        return f'{self.date.strftime("%d.%m.%y")},{self.time.strftime("%H.%M")},{self.gruppe},{str(self.untergruppe)},' \
-               f'{self.heim},{self.gast},{self.ort}'
+        return f'{self.date},{self.time},{self.gruppe},{self.untergruppe},{self.heim},{self.gast},{self.ort}'
 
     def __repr__(self):
         return self.__str__()

@@ -39,11 +39,10 @@ class Team(db.Model):
     name = db.Column(db.String(80), nullable=False)
     club_id = db.Column(db.Integer, db.ForeignKey('clubs.id'), nullable=False)
     person_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
-    pool_id = db.Column(db.Integer, db.ForeignKey('pools.id'))
+    pool = db.Column(db.String(100))
     league_id = db.Column(db.Integer, db.ForeignKey('leagues.id'), nullable=False)
     club = db.relationship('Club', backref='clubs')
     person = db.relationship('Person', backref='teams')
-    pool = db.relationship('Pool', backref='pools')
     league = db.relationship('League', backref='leagues', lazy='joined')
 
     def __init__(self, name, club, league, person=None, pool=None):

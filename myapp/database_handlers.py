@@ -249,7 +249,7 @@ def insert_team(**kwargs):
                    query_clubs(club_name=kwargs.get('club')),
                    query_leagues(league_name=kwargs.get('league')))
     with db.session.no_autoflush:
-        if kwargs.get('pool'): newteam.pool = query_pools(pool_name=kwargs.get('pool'))
+        if kwargs.get('pool'): newteam.pool = kwargs.get('pool')
         if kwargs.get('person'): newteam.person = query_person(kwargs.get('person'))
 
     db.session.add(newteam)
