@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, url_for, request, redirect, session
+from flask import Blueprint, render_template, url_for, request, redirect
+from flask import session as flask_session
 
 from myapp.database_handlers import query_teams, query_leagues, query_gamedates, update_gamedates, query_pools, \
     query_clubs, update_team_instance, insert_team, insert_club, delete_team
@@ -126,13 +127,13 @@ def update_team():
 @view_bp.route('/add_new_team', methods=['GET', 'POST'])
 def add_new_team():
     if request.method == 'GET':
-        session['referrer'] = request.headers.get('Referer')
+        flask_session['referrer'] = request.headers.get('Referer')
 
     add_team = InsertTeam(request.form)
     if add_team.validate_on_submit():
         add_values = {k: add_team.data[k] for k in add_team.data if k in ['name', 'person', 'pool', 'league', 'club']}
         insert_team(**add_values)
-        return redirect(session.pop('referrer'))
+        return redirect(flask_session.pop('referrer'))
 
     return render_template('/add_team.html', add_team=add_team, csrf_token=csrf)
 

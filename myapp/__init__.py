@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 from flask import Flask
+from flask_migrate import Migrate
 from flask_session import Session
 
 from myapp.models import db
 from myapp.extensions import csrf
 
 session = Session()
+migrate = Migrate()
 
 
 def create_app(config=None):
@@ -17,6 +19,7 @@ def create_app(config=None):
     db.init_app(app)
     csrf.init_app(app)
     session.init_app(app)
+    migrate.init_app(app, db)
 
     with app.app_context():
         db.create_all()
