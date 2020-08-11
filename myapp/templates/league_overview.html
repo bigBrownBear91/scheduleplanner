@@ -3,11 +3,14 @@
 <div class="container">
     {% for league in leagues %}
     <div class="row">
-        <div class="col-6">
+        <div class="col-4">
             {{ league.name }}
         </div>
-        <div class="col-6">
+        <div class="col-4">
             <a href="{{ url_for('view_bp.get_index_page', league_id=league.id) }}">Go to this league</a>
+        </div>
+        <div class="col-4">
+            <a href="{{ url_for('view_bp.league_schedule', league_id=league.id) }}">Schedule as csv</a>
         </div>
     </div>
     {% endfor %}
