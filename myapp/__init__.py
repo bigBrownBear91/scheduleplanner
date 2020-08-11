@@ -20,7 +20,7 @@ def create_app(config=None):
 
     with app.app_context():
         db.create_all()
-        import myapp.view
-        app.register_blueprint(view.view_bp)
+        import myapp.view as view_module
+        app.register_blueprint(view_module.view_bp)
 
         return app
